@@ -64,11 +64,10 @@ fun TasksScreen(navController: NavHostController) {
             NewTaskBottomSheetContent(selectedTaskType) {
                 coroutineScope.launch {
                     bottomSheetState.hide()
+                    navController.navigate(
+                        TaskScreens.TaskDetailsScreen.name + "/$selectedTaskType"
+                    )
                 }
-
-                navController.navigate(
-                    TaskScreens.TaskDetailsScreen.name + "/$selectedTaskType"
-                )
             }
         },
     ) {

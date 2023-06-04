@@ -76,16 +76,11 @@ fun TaskDetailsScreen(
                     actionIconContentColor = MaterialTheme.colorScheme.onBackground,
                 ),
                 navigationIcon = {
-                    Row(
-                        modifier = Modifier.padding(vertical = 8.dp),
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "Arrow Back",
-                            )
-                        }
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Arrow Back",
+                        )
                     }
                 }
             )
