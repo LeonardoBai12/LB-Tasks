@@ -35,7 +35,7 @@ import io.lb.lbtasks.ui.theme.Yellow
 
 @Composable
 fun NewTaskBottomSheetContent(
-    selectedCategory: MutableState<String>,
+    selectedTaskType: MutableState<String>,
     onClick: () -> Unit
 ) {
     Column(
@@ -59,9 +59,8 @@ fun NewTaskBottomSheetContent(
         ) {
             items(TaskType.values()) {
                 IconButtonTextWidget(
-                    text = stringResource(id = it.titleId),
-                    painterId = it.painterId,
-                    selectedCategory = selectedCategory
+                    taskType = it,
+                    selectedTaskType = selectedTaskType
                 )
             }
         }
@@ -69,7 +68,7 @@ fun NewTaskBottomSheetContent(
         DefaultTextButton(
             modifier = Modifier.width(200.dp),
             text = stringResource(id = R.string.create_new_task),
-            enabled = selectedCategory.value.isNotEmpty(),
+            enabled = selectedTaskType.value.isNotEmpty(),
             onClick = onClick
         )
     }
@@ -77,9 +76,8 @@ fun NewTaskBottomSheetContent(
 
 @Composable
 fun IconButtonTextWidget(
-    text: String,
-    painterId: Int,
-    selectedCategory: MutableState<String>,
+    taskType: TaskType,
+    selectedTaskType: MutableState<String>,
 ) {
     Column(
         modifier = Modifier.padding(8.dp),
@@ -88,7 +86,7 @@ fun IconButtonTextWidget(
     ) {
         DefaultIconButton(
             modifier = Modifier.takeIf {
-                text == selectedCategory.value
+                taskType.name == selectedTaskType.value
             }?.border(
                 width = 2.dp,
                 shape = RoundedCornerShape(16.dp),
@@ -101,14 +99,17 @@ fun IconButtonTextWidget(
                 )
             ) ?: Modifier.size(48.dp),
             iconModifier = Modifier.fillMaxSize(0.7f),
-            painter = painterResource(id = painterId),
-            contentDescription = "${text}Icon",
+            painter = painterResource(id = taskType.painterId),
+            contentDescription = "${taskType.name}Icon",
             shape = RoundedCornerShape(16.dp),
             onClick = {
-                selectedCategory.value = text
+                selectedTaskType.value = taskType.name
             }
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = text, color = MaterialTheme.colorScheme.onPrimaryContainer)
+        Text(
+            text = stringResource(id = taskType.titleId),
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
     }
 }

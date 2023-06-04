@@ -1,4 +1,4 @@
-package io.lb.lbtasks.feature_task.presentation.screens
+package io.lb.lbtasks.feature_task.presentation.details
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -34,37 +34,42 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import io.lb.lbtasks.R
-import io.lb.lbtasks.core.util.datePicker
-import io.lb.lbtasks.core.util.timePicker
+import io.lb.lbtasks.core.util.createDatePickerDialog
+import io.lb.lbtasks.core.util.createTimePickerDialog
 import io.lb.lbtasks.core.presentation.widgets.DefaultFilledTextField
 import io.lb.lbtasks.core.presentation.widgets.DefaultTextButton
+import io.lb.lbtasks.feature_task.domain.model.Task
+import io.lb.lbtasks.feature_task.presentation.listing.TaskEvent
+import io.lb.lbtasks.feature_task.presentation.listing.TaskViewModel
 
 @ExperimentalMaterial3Api
 @ExperimentalComposeUiApi
 @Composable
 fun TaskDetailsScreen(
     navController: NavHostController,
-    category: String
+    viewModel: TaskDetailsVIewModel = hiltViewModel(),
 ) {
+    val state = viewModel.state.value
+
     val title = remember {
-        mutableStateOf("")
+        mutableStateOf(state.task?.title  ?: "")
     }
 
     val description = remember {
-        mutableStateOf("")
+        mutableStateOf(state.task?.description ?: "")
     }
 
     val date = remember {
-        mutableStateOf("")
+        mutableStateOf(state.task?.deadlineDate ?: "")
     }
 
     val time = remember {
-        mutableStateOf("")
+        mutableStateOf(state.task?.deadlineTime ?: "")
     }
 
-    Text(text = category, fontSize = 48.sp)
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         contentColor = MaterialTheme.colorScheme.onBackground,
@@ -119,7 +124,14 @@ fun TaskDetailsScreen(
                     .padding(horizontal = 72.dp, vertical = 16.dp),
                 text = stringResource(R.string.finish)
             ) {
-                navController.popBackStack()
+                viewModel.onEvent(
+                    TaskDetailsEvent.RequestInsert(
+                        title = title.value,
+                        description = description.value,
+                        date = date.value,
+                        time = time.value,
+                    )
+                )
             }
         }
     }
@@ -133,8 +145,8 @@ private fun DateAndTimePickers(
     time: MutableState<String>,
 ) {
     val context = LocalContext.current
-    val datePicker = context.datePicker(date, isSystemInDarkTheme())
-    val timePicker = context.timePicker(time, isSystemInDarkTheme())
+    val datePicker = context.createDatePickerDialog(date, isSystemInDarkTheme())
+    val timePicker = context.createTimePickerDialog(time, isSystemInDarkTheme())
 
     Row(
         modifier = Modifier

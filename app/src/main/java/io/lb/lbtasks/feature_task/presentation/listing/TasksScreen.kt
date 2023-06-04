@@ -1,4 +1,4 @@
-package io.lb.lbtasks.feature_task.presentation.screens
+package io.lb.lbtasks.feature_task.presentation.listing
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
@@ -26,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -38,8 +41,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
 import io.lb.lbtasks.R
 import io.lb.lbtasks.core.presentation.widgets.LBTasksLogoIcon
+import io.lb.lbtasks.core.util.DefaultSearchBar
 import io.lb.lbtasks.core.util.showToast
-import io.lb.lbtasks.feature_task.presentation.TaskViewModel
+import io.lb.lbtasks.feature_task.domain.model.Task
 import io.lb.lbtasks.feature_task.presentation.navigation.TaskScreens
 import io.lb.lbtasks.feature_task.presentation.widgets.NewTaskBottomSheetContent
 import io.lb.lbtasks.feature_task.presentation.widgets.TaskCard
@@ -47,6 +51,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+@ExperimentalComposeUiApi
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
 @Composable
@@ -97,22 +102,38 @@ fun TasksScreen(
                     bottomSheetState.hide()
                 }
                 navController.navigate(
-                    TaskScreens.TaskDetailsScreen.name + "/$selectedTaskType"
+                    TaskScreens.TaskDetailsScreen.name + "/${
+                        Task(title = "", taskType = selectedTaskType.value).toJson()
+                    }"
                 )
             }
         },
     ) {
-        TasksScaffold(coroutineScope, bottomSheetState)
+        TasksScaffold(
+            navController = navController,
+            coroutineScope = coroutineScope,
+            bottomSheetState = bottomSheetState,
+            viewModel = viewModel,
+        )
     }
 }
 
+@ExperimentalComposeUiApi
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
 @Composable
 private fun TasksScaffold(
+    navController: NavHostController,
     coroutineScope: CoroutineScope,
-    bottomSheetState: ModalBottomSheetState
+    bottomSheetState: ModalBottomSheetState,
+    viewModel: TaskViewModel,
 ) {
+    val state = viewModel.state.value
+
+    val search = remember {
+        mutableStateOf("")
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
@@ -155,8 +176,29 @@ private fun TasksScaffold(
                 )
             }
 
-            repeat(4) {
-                TaskCard { }
+            DefaultSearchBar(
+                search = search,
+                modifier = Modifier.padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    bottom = 16.dp
+                ),
+                onSearch = { task ->
+                    viewModel.onEvent(TaskEvent.SearchedForTask(task))
+                },
+                isEnabled = !state.loading && state.tasks.isNotEmpty()
+            )
+
+            if (state.tasks.isNotEmpty()) {
+                LazyColumn {
+                    items(state.tasks) { task ->
+                        TaskCard(task = task) {
+                            navController.navigate(
+                                TaskScreens.TaskDetailsScreen.name + "/${task.toJson()}"
+                            )
+                        }
+                    }
+                }
             }
         }
     }

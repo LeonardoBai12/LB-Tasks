@@ -1,4 +1,4 @@
-package io.lb.lbtasks.feature_task.presentation
+package io.lb.lbtasks.feature_task.presentation.listing
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -14,6 +14,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,7 +40,7 @@ class TaskViewModel @Inject constructor(
 
     fun onEvent(event: TaskEvent) {
         when (event) {
-            is TaskEvent.SearchedForMeal -> {
+            is TaskEvent.SearchedForTask -> {
                 searchJob?.cancel()
                 searchJob = viewModelScope.launch {
                     event.filter.takeIf {
@@ -54,18 +55,6 @@ class TaskViewModel @Inject constructor(
             }
             is TaskEvent.RequestDelete -> {
                 deleteTask(event.task)
-            }
-            is TaskEvent.RequestInsert -> {
-                insertTask(
-                    title = event.title,
-                    description = event.description,
-                    taskType = event.taskType,
-                    deadlineDate = event.deadlineDate,
-                    deadlineTime = event.deadlineTime
-                )
-            }
-            is TaskEvent.RequestUpdate -> {
-                updateTask(event.task)
             }
         }
     }
@@ -99,30 +88,6 @@ class TaskViewModel @Inject constructor(
                     }
                 }
             }
-        }
-    }
-
-    private fun insertTask(
-        title: String,
-        description: String = "",
-        taskType: String,
-        deadlineDate: String,
-        deadlineTime: String
-    ) {
-        viewModelScope.launch {
-            useCases.insertTaskUseCase(
-                title = title,
-                description = description,
-                taskType = taskType,
-                deadlineDate = deadlineDate,
-                deadlineTime = deadlineTime,
-            )
-        }
-    }
-
-    private fun updateTask(task: Task) {
-        viewModelScope.launch {
-            useCases.updateTaskUseCase(task)
         }
     }
 

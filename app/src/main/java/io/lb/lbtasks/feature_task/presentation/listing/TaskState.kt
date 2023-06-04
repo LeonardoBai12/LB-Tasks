@@ -1,4 +1,4 @@
-package io.lb.lbtasks.feature_task.presentation
+package io.lb.lbtasks.feature_task.presentation.listing
 
 import io.lb.lbtasks.feature_task.domain.model.Task
 

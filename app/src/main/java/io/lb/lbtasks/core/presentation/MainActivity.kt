@@ -11,12 +11,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import dagger.hilt.android.AndroidEntryPoint
 import io.lb.lbtasks.feature_task.presentation.navigation.MainNavigation
 import io.lb.lbtasks.ui.theme.LBTasksTheme
 
 @ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 @ExperimentalMaterial3Api
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {

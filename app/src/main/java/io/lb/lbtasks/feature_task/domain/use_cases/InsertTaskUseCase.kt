@@ -1,5 +1,6 @@
 package io.lb.lbtasks.feature_task.domain.use_cases
 
+import io.lb.lbtasks.feature_task.domain.model.Task
 import io.lb.lbtasks.feature_task.domain.repository.TaskRepository
 
 class InsertTaskUseCase(
@@ -16,11 +17,13 @@ class InsertTaskUseCase(
             throw Exception("Atenção! Adicione um título à sua tarefa para continuar.")
 
         repository.insertTask(
-            title = title,
-            description = description,
-            taskType = taskType,
-            deadlineDate = deadlineDate,
-            deadlineTime = deadlineTime,
+            Task(
+                title = title,
+                description = description,
+                taskType = taskType,
+                deadlineDate = deadlineDate,
+                deadlineTime = deadlineTime,
+            )
         )
     }
 }

@@ -6,72 +6,54 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import io.lb.lbtasks.R
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-fun Context.timePicker(time: MutableState<String>, isDarkTheme: Boolean): TimePickerDialog {
-    val calendar = Calendar.getInstance(Locale.ENGLISH)
+fun Context.createTimePickerDialog(time: MutableState<String>, isDarkTheme: Boolean): TimePickerDialog {
     val theme = if (isDarkTheme) {
         R.style.Theme_DateDialogDark
     } else {
         R.style.Theme_DateDialogLight
     }
 
-    return TimePickerDialog(
-        this,
-        theme,
-        { _, hour, minute ->
-            time.value = timeToString(hour, minute)
-        },
-        calendar.get(Calendar.HOUR_OF_DAY),
-        calendar.get(Calendar.MINUTE),
-        true
-    )
+    return with(Calendar.getInstance(Locale.ENGLISH)) {
+        TimePickerDialog(
+            this@createTimePickerDialog,
+            theme,
+            { _, hour, minute ->
+                time.value = timeToString(hour, minute)
+            },
+            get(Calendar.HOUR_OF_DAY),
+            get(Calendar.MINUTE),
+            true
+        )
+    }
 }
 
-fun Context.datePicker(
+fun Context.createDatePickerDialog(
     date: MutableState<String>,
     isDarkTheme: Boolean
 ): DatePickerDialog {
-    val calendar = Calendar.getInstance(Locale.ENGLISH)
     val theme = if (isDarkTheme) {
         R.style.Theme_DateDialogDark
     } else {
         R.style.Theme_DateDialogLight
     }
 
-    return DatePickerDialog(
-        this,
-        theme,
-        { _, year, month, day ->
-            date.value = dateToString(day, month, year)
-        },
-        calendar.get(Calendar.YEAR),
-        calendar.get(Calendar.MONTH),
-        calendar.get(Calendar.DAY_OF_MONTH)
-    )
+    return with(Calendar.getInstance(Locale.ENGLISH)) {
+        DatePickerDialog(
+            this@createDatePickerDialog,
+            theme,
+            { _, year, month, day ->
+                date.value = dateToString(day, month, year)
+            },
+            get(Calendar.YEAR),
+            get(Calendar.MONTH),
+            get(Calendar.DAY_OF_MONTH)
+        )
+    }
 }
 
 fun Context.showToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-}
-
-private fun dateToString(
-    day: Int,
-    month: Int,
-    year: Int,
-): String {
-    val date = SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH)
-        .parse("$day-${month + 1}-$year")!!
-    return SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH).format(date)
-}
-
-fun timeToString(
-    hour: Int,
-    minute: Int,
-): String {
-    val date = SimpleDateFormat("HH:mm", Locale.ENGLISH)
-        .parse("$hour:$minute")!!
-    return SimpleDateFormat("HH:mm", Locale.ENGLISH).format(date)
 }

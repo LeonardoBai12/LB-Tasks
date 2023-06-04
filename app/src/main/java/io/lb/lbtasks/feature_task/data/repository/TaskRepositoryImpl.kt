@@ -2,8 +2,6 @@ package io.lb.lbtasks.feature_task.data.repository
 
 import io.lb.lbtasks.core.util.Resource
 import io.lb.lbtasks.feature_task.data.local.TaskDao
-import io.lb.lbtasks.feature_task.data.mapper.toTask
-import io.lb.lbtasks.feature_task.data.mapper.toTaskEntity
 import io.lb.lbtasks.feature_task.domain.model.Task
 import io.lb.lbtasks.feature_task.domain.repository.TaskRepository
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +11,7 @@ class TaskRepositoryImpl(
     private val dao: TaskDao
 ) : TaskRepository {
     override suspend fun deleteTask(task: Task) {
-        dao.deleteTask(task.toTaskEntity())
+        dao.deleteTask(task)
     }
 
     override suspend fun getTasks(): Flow<Resource<List<Task>>> {
@@ -27,7 +25,7 @@ class TaskRepositoryImpl(
             }?.let { tasks ->
                 emit(
                     Resource.Success(
-                        data = tasks.map { it.toTask() }
+                        data = tasks
                     )
                 )
 
@@ -38,17 +36,11 @@ class TaskRepositoryImpl(
         }
     }
 
-    override suspend fun insertTask(
-        title: String,
-        description: String,
-        taskType: String,
-        deadlineDate: String,
-        deadlineTime: String
-    ) {
-        dao.insertSingleTask(task.toTaskEntity())
+    override suspend fun insertTask(task: Task) {
+        dao.insertSingleTask(task)
     }
 
     override suspend fun updateTask(task: Task) {
-        dao.updateTask(task.toTaskEntity())
+        dao.updateTask(task)
     }
 }

@@ -18,10 +18,12 @@ import io.lb.lbtasks.feature_task.domain.use_cases.UpdateTaskUseCase
 @InstallIn(ViewModelComponent::class)
 object TaskModule {
     @Provides
-    fun providesCategoryDao(appDatabase: AppDatabase) = appDatabase.taskDao
+    fun providesTaskDao(appDatabase: AppDatabase) = appDatabase.taskDao
 
     @Provides
-    fun providesCategoryRepository(dao: TaskDao) = TaskRepositoryImpl(dao)
+    fun providesTaskRepository(dao: TaskDao): TaskRepository {
+        return TaskRepositoryImpl(dao)
+    }
 
     @Provides
     fun providesCategoryUseCases(repository: TaskRepository) =

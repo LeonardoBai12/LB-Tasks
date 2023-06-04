@@ -24,19 +24,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.lb.lbtasks.R
 import io.lb.lbtasks.core.presentation.widgets.DefaultIcon
+import io.lb.lbtasks.feature_task.domain.model.Task
+import io.lb.lbtasks.feature_task.domain.model.TaskType
 
 @ExperimentalMaterial3Api
 @Composable
-fun TaskCard(onClick: (String) -> Unit) {
+fun TaskCard(
+    task: Task,
+    onClick: (String) -> Unit,
+) {
     Card(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(horizontal = 12.dp)
             .padding(bottom = 12.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(0.5F)
         ),
-        onClick = { },
+        onClick = {
+            onClick.invoke(task.toJson())
+        },
     ) {
         Row(
             modifier = Modifier.padding(12.dp),
@@ -48,20 +56,22 @@ fun TaskCard(onClick: (String) -> Unit) {
                 iconModifier = Modifier.fillMaxSize(0.7F),
                 shape = RoundedCornerShape(16.dp),
                 containerColor = MaterialTheme.colorScheme.background.copy(0.9F),
-                painter = painterResource(id = R.drawable.ic_home),
-                contentDescription = "", // Nome da task
+                painter = painterResource(
+                    id = TaskType.valueOf(task.taskType).painterId
+                ),
+                contentDescription = TaskType.valueOf(task.taskType).name,
             )
 
             Spacer(modifier = Modifier.width(12.dp))
 
             Column {
                 Text(
-                    text = "Tarefa registrada",
+                    text = task.title,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 18.sp
                 )
                 Text(
-                    text = "12/12/2020 12:20",
+                    text = "${task.deadlineDate} ${task.deadlineTime}",
                     fontSize = 12.sp
                 )
             }

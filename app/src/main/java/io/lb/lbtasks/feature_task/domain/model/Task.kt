@@ -1,10 +1,22 @@
 package io.lb.lbtasks.feature_task.domain.model
 
-import java.util.Date
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.google.gson.Gson
 
+@Entity(tableName = "tasks")
 data class Task(
-    val title: String,
-    val description: String? = null,
+    @PrimaryKey
+    val id: Int = 0,
+    var title: String,
+    var description: String? = null,
     val taskType: String,
-    val deadlineDate: Date? = null,
-)
+    var deadlineDate: String? = null,
+    var deadlineTime: String? = null,
+) {
+    companion object {
+        fun fromJson(json: String): Task = Gson().fromJson(json, Task::class.java)
+    }
+
+    fun toJson() = Gson().toJson(this).toString()
+}
