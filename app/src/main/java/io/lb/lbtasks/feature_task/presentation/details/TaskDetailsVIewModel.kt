@@ -30,6 +30,7 @@ class TaskDetailsVIewModel @Inject constructor(
 
     sealed class UiEvent {
         data class ShowToast(val message: String) : UiEvent()
+        object Back: UiEvent()
     }
 
     init {
@@ -81,6 +82,8 @@ class TaskDetailsVIewModel @Inject constructor(
                     deadlineDate = date,
                     deadlineTime = time,
                 )
+
+                _eventFlow.emit(UiEvent.Back)
             } catch (e: Exception) {
                 e.message?.let {
                     _eventFlow.emit(UiEvent.ShowToast(it))
@@ -106,6 +109,8 @@ class TaskDetailsVIewModel @Inject constructor(
                     deadlineDate = date,
                     deadlineTime = time,
                 )
+
+                _eventFlow.emit(UiEvent.Back)
             } catch (e: Exception) {
                 e.message?.let {
                     _eventFlow.emit(UiEvent.ShowToast(it))

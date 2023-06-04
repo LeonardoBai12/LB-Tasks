@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,9 +42,11 @@ import io.lb.lbtasks.core.util.createDatePickerDialog
 import io.lb.lbtasks.core.util.createTimePickerDialog
 import io.lb.lbtasks.core.presentation.widgets.DefaultFilledTextField
 import io.lb.lbtasks.core.presentation.widgets.DefaultTextButton
+import io.lb.lbtasks.core.util.showToast
 import io.lb.lbtasks.feature_task.domain.model.Task
 import io.lb.lbtasks.feature_task.presentation.listing.TaskEvent
 import io.lb.lbtasks.feature_task.presentation.listing.TaskViewModel
+import kotlinx.coroutines.flow.collectLatest
 
 @ExperimentalMaterial3Api
 @ExperimentalComposeUiApi
@@ -52,6 +55,7 @@ fun TaskDetailsScreen(
     navController: NavHostController,
     viewModel: TaskDetailsVIewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     val state = viewModel.state.value
 
     val title = remember {
@@ -68,6 +72,19 @@ fun TaskDetailsScreen(
 
     val time = remember {
         mutableStateOf(state.task?.deadlineTime ?: "")
+    }
+
+    LaunchedEffect(key1 = "TaskDetailsScreen") {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                TaskDetailsVIewModel.UiEvent.Back -> {
+                    navController.popBackStack()
+                }
+                is TaskDetailsVIewModel.UiEvent.ShowToast -> {
+                    context.showToast(event.message)
+                }
+            }
+        }
     }
 
     Scaffold(

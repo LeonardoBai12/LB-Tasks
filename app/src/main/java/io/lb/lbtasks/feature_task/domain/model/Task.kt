@@ -6,8 +6,8 @@ import com.google.gson.Gson
 
 @Entity(tableName = "tasks")
 data class Task(
-    @PrimaryKey
-    val id: Int = 0,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int? = null,
     var title: String,
     var description: String? = null,
     val taskType: String,
