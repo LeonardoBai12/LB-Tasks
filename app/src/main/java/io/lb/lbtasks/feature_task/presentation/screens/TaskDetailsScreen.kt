@@ -2,17 +2,25 @@ package io.lb.lbtasks.feature_task.presentation.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.TopAppBar
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -28,10 +36,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import io.lb.lbtasks.R
-import io.lb.lbtasks.core.presentation.widgets.DefaultFilledTextField
-import io.lb.lbtasks.core.presentation.widgets.DefaultTextButton
 import io.lb.lbtasks.core.extensions.datePicker
 import io.lb.lbtasks.core.extensions.timePicker
+import io.lb.lbtasks.core.presentation.widgets.DefaultFilledTextField
+import io.lb.lbtasks.core.presentation.widgets.DefaultTextButton
 
 @ExperimentalMaterial3Api
 @ExperimentalComposeUiApi
@@ -58,26 +66,29 @@ fun TaskDetailsScreen(
 
     Text(text = category, fontSize = 48.sp)
     Scaffold(
-        backgroundColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.background,
         contentColor = MaterialTheme.colorScheme.onBackground,
         topBar = {
             TopAppBar(
-                backgroundColor = Color.Transparent,
-                contentColor = MaterialTheme.colorScheme.onBackground,
-                elevation = 0.dp,
-            ) {
-                Row(
-                    modifier = Modifier.padding(vertical = 8.dp),
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription ="Arrow Back",
-                        )
+                title = { },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent,
+                    actionIconContentColor = MaterialTheme.colorScheme.onBackground,
+                ),
+                navigationIcon = {
+                    Row(
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Arrow Back",
+                            )
+                        }
                     }
                 }
-            }
+            )
         },
     ) { padding ->
         Column(

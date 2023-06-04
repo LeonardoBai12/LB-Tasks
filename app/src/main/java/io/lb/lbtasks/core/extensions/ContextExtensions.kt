@@ -20,7 +20,7 @@ fun Context.timePicker(time: MutableState<String>, isDarkTheme: Boolean): TimePi
     return TimePickerDialog(
         this,
         theme,
-        {_, hour, minute ->
+        { _, hour, minute ->
             time.value = timeToString(hour, minute)
         },
         calendar.get(Calendar.HOUR_OF_DAY),

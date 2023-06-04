@@ -10,8 +10,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import io.lb.lbtasks.feature_task.presentation.screens.TasksScreen
 import io.lb.lbtasks.feature_task.presentation.screens.TaskDetailsScreen
+import io.lb.lbtasks.feature_task.presentation.screens.TasksScreen
 
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
@@ -24,7 +24,7 @@ fun MainNavigation() {
         navController = navController,
         startDestination = TaskScreens.TaskScreen.name
     ) {
-        composable(TaskScreens.TaskScreen.name){
+        composable(TaskScreens.TaskScreen.name) {
             TasksScreen(navController = navController)
         }
 
@@ -35,7 +35,7 @@ fun MainNavigation() {
                     type = NavType.StringType
                 }
             )
-        ){ backStackEntry ->
+        ) { backStackEntry ->
             backStackEntry.arguments?.getString("task")?.let {
                 TaskDetailsScreen(
                     navController = navController,

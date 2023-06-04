@@ -126,9 +126,7 @@ private fun TasksScaffold(
             }
 
             repeat(4) {
-                TaskCard {
-
-                }
+                TaskCard { }
             }
         }
     }
