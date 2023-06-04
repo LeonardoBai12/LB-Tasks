@@ -34,7 +34,7 @@ fun TaskCard(onClick: (String) -> Unit) {
             .padding(bottom = 12.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(0.5f)
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(0.5F)
         ),
         onClick = { },
     ) {
@@ -45,9 +45,9 @@ fun TaskCard(onClick: (String) -> Unit) {
         ) {
             DefaultIcon(
                 modifier = Modifier.size(48.dp),
-                iconModifier = Modifier.fillMaxSize(0.7f),
+                iconModifier = Modifier.fillMaxSize(0.7F),
                 shape = RoundedCornerShape(16.dp),
-                containerColor = MaterialTheme.colorScheme.background.copy(0.9f),
+                containerColor = MaterialTheme.colorScheme.background.copy(0.9F),
                 painter = painterResource(id = R.drawable.ic_home),
                 contentDescription = "", // Nome da task
             )

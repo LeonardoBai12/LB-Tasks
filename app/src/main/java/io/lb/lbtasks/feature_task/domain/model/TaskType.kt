@@ -3,31 +3,31 @@ package io.lb.lbtasks.feature_task.domain.model
 import io.lb.lbtasks.R
 
 enum class TaskType(
-    val title: String,
+    val titleId: Int,
     val painterId: Int,
 ) {
     HOME(
-        title = "Casa",
+        titleId = R.string.home,
         painterId = R.drawable.ic_home
     ),
     BUSINESS(
-        title = "Negócios",
+        titleId = R.string.business,
         painterId = R.drawable.ic_business
     ),
     STUDY(
-        title = "Estudos",
+        titleId = R.string.study,
         painterId = R.drawable.ic_school
     ),
     HOBBIES(
-        title = "Hobbies",
+        titleId = R.string.hobbies,
         painterId = R.drawable.ic_esports
     ),
     SHOPPING(
-        title = "Compras",
+        titleId = R.string.shopping,
         painterId = R.drawable.ic_shopping
     ),
-    TRIP(
-        title = "Viagem",
+    TRAVEL(
+        titleId = R.string.travel,
         painterId = R.drawable.ic_travel
     ),
 }

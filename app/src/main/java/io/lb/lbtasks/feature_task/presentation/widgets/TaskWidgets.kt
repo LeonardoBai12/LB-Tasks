@@ -21,14 +21,17 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.lb.lbtasks.R
 import io.lb.lbtasks.core.presentation.widgets.DefaultIconButton
 import io.lb.lbtasks.core.presentation.widgets.DefaultTextButton
 import io.lb.lbtasks.feature_task.domain.model.TaskType
+import io.lb.lbtasks.ui.theme.DarkYellow
+import io.lb.lbtasks.ui.theme.Yellow
 
 @Composable
 fun NewTaskBottomSheetContent(
@@ -36,13 +39,14 @@ fun NewTaskBottomSheetContent(
     onClick: () -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(vertical = 24.dp),
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Escolha uma atividade",
+            text = stringResource(id = R.string.choose_an_activity),
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp
         )
@@ -55,7 +59,7 @@ fun NewTaskBottomSheetContent(
         ) {
             items(TaskType.values()) {
                 IconButtonTextWidget(
-                    text = it.title,
+                    text = stringResource(id = it.titleId),
                     painterId = it.painterId,
                     selectedCategory = selectedCategory
                 )
@@ -64,7 +68,7 @@ fun NewTaskBottomSheetContent(
 
         DefaultTextButton(
             modifier = Modifier.width(200.dp),
-            text = "Criar nova tarefa",
+            text = stringResource(id = R.string.create_new_task),
             enabled = selectedCategory.value.isNotEmpty(),
             onClick = onClick
         )
@@ -90,9 +94,9 @@ fun IconButtonTextWidget(
                 shape = RoundedCornerShape(16.dp),
                 brush = Brush.horizontalGradient(
                     listOf(
-                        Color(0xFFFFB700),
-                        Color(0xFFFFDD00),
-                        Color(0xFFFFB700)
+                        DarkYellow,
+                        Yellow,
+                        DarkYellow
                     )
                 )
             ) ?: Modifier.size(48.dp),

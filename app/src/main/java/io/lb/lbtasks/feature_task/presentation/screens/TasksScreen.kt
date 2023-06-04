@@ -27,23 +27,34 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
+import io.lb.lbtasks.R
 import io.lb.lbtasks.core.presentation.widgets.LBTasksLogoIcon
+import io.lb.lbtasks.core.util.showToast
+import io.lb.lbtasks.feature_task.presentation.TaskViewModel
 import io.lb.lbtasks.feature_task.presentation.navigation.TaskScreens
 import io.lb.lbtasks.feature_task.presentation.widgets.NewTaskBottomSheetContent
 import io.lb.lbtasks.feature_task.presentation.widgets.TaskCard
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
 @Composable
-fun TasksScreen(navController: NavHostController) {
+fun TasksScreen(
+    navController: NavHostController,
+    viewModel: TaskViewModel = hiltViewModel()
+) {
+    val context = LocalContext.current
     val selectedTaskType = remember {
         mutableStateOf("")
     }
@@ -60,10 +71,18 @@ fun TasksScreen(navController: NavHostController) {
     val lifecycle = LocalLifecycleOwner.current
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(key1 = "") {
+    LaunchedEffect(key1 = "launchedEffectKey") {
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             if (bottomSheetState.isVisible)
                 bottomSheetState.hide()
+        }
+
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is TaskViewModel.UiEvent.ShowToast -> {
+                    context.showToast(event.message)
+                }
+            }
         }
     }
 
@@ -130,7 +149,7 @@ private fun TasksScaffold(
                 LBTasksLogoIcon()
 
                 Text(
-                    text = "LB Tasks",
+                    text = stringResource(R.string.app_name),
                     modifier = Modifier.padding(horizontal = 16.dp),
                     fontSize = 36.sp
                 )

@@ -30,13 +30,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import io.lb.lbtasks.R
-import io.lb.lbtasks.core.extensions.datePicker
-import io.lb.lbtasks.core.extensions.timePicker
+import io.lb.lbtasks.core.util.datePicker
+import io.lb.lbtasks.core.util.timePicker
 import io.lb.lbtasks.core.presentation.widgets.DefaultFilledTextField
 import io.lb.lbtasks.core.presentation.widgets.DefaultTextButton
 
@@ -92,7 +93,7 @@ fun TaskDetailsScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Nova tarefa",
+                text = stringResource(id = R.string.new_task),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.SemiBold
             )
@@ -100,22 +101,23 @@ fun TaskDetailsScreen(
             DefaultFilledTextField(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 text = title,
-                label = "Título",
+                label = stringResource(R.string.title),
             )
 
             DefaultFilledTextField(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 text = description,
                 isSingleLined = false,
-                label = "Descrição",
+                label = stringResource(R.string.description),
             )
 
             DateAndTimePickers(date, time)
 
             DefaultTextButton(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(horizontal = 72.dp, vertical = 16.dp),
-                text = "Finalizar"
+                text = stringResource(R.string.finish)
             ) {
                 navController.popBackStack()
             }
@@ -145,7 +147,7 @@ private fun DateAndTimePickers(
             isSingleLined = false,
             isEnabled = false,
             hasCloseButton = true,
-            label = "Prazo de entrega",
+            label = stringResource(id = R.string.deadline),
             icon = {
                 Icon(
                     Icons.Default.DateRange,
@@ -170,7 +172,7 @@ private fun DateAndTimePickers(
                     modifier = Modifier.clickable {
                         timePicker.show()
                     },
-                    contentDescription = "dateIcon"
+                    contentDescription = "timeIcon"
                 )
             },
         )

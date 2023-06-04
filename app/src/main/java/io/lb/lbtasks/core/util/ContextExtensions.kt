@@ -1,8 +1,9 @@
-package io.lb.lbtasks.core.extensions
+package io.lb.lbtasks.core.util
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import io.lb.lbtasks.R
 import java.text.SimpleDateFormat
@@ -29,7 +30,10 @@ fun Context.timePicker(time: MutableState<String>, isDarkTheme: Boolean): TimePi
     )
 }
 
-fun Context.datePicker(date: MutableState<String>, isDarkTheme: Boolean): DatePickerDialog {
+fun Context.datePicker(
+    date: MutableState<String>,
+    isDarkTheme: Boolean
+): DatePickerDialog {
     val calendar = Calendar.getInstance(Locale.ENGLISH)
     val theme = if (isDarkTheme) {
         R.style.Theme_DateDialogDark
@@ -47,6 +51,10 @@ fun Context.datePicker(date: MutableState<String>, isDarkTheme: Boolean): DatePi
         calendar.get(Calendar.MONTH),
         calendar.get(Calendar.DAY_OF_MONTH)
     )
+}
+
+fun Context.showToast(message: String) {
+    Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 }
 
 private fun dateToString(
