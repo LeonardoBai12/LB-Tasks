@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.LBTasks" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.DateDialogDark" parent="android:Theme.Material.Dialog.Alert">
+        <item name="android:colorAccent">@color/color_accent_dark</item>
+    </style>
+    <style name="Theme.DateDialogLight" parent="android:Theme.Material.Light.Dialog">
+        <item name="android:colorAccent">@color/color_accent_light</item>
+    </style>
+
+    <color name="color_accent_light">#0072CC</color>
+    <color name="color_accent_dark">#5EACEA</color>
+</resources>
