@@ -21,13 +21,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
 import io.lb.lbtasks.core.presentation.widgets.LBTasksLogoIcon
 import io.lb.lbtasks.feature_task.presentation.navigation.TaskScreens
@@ -53,7 +57,15 @@ fun TasksScreen(navController: NavHostController) {
             true
         }
     )
+    val lifecycle = LocalLifecycleOwner.current
     val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(key1 = "") {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            if (bottomSheetState.isVisible)
+                bottomSheetState.hide()
+        }
+    }
 
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
@@ -65,7 +77,6 @@ fun TasksScreen(navController: NavHostController) {
                 coroutineScope.launch {
                     bottomSheetState.hide()
                 }
-
                 navController.navigate(
                     TaskScreens.TaskDetailsScreen.name + "/$selectedTaskType"
                 )
