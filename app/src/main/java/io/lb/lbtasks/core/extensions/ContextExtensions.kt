@@ -6,7 +6,8 @@ import android.content.Context
 import androidx.compose.runtime.MutableState
 import io.lb.lbtasks.R
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 fun Context.timePicker(time: MutableState<String>, isDarkTheme: Boolean): TimePickerDialog {
     val calendar = Calendar.getInstance(Locale.ENGLISH)
