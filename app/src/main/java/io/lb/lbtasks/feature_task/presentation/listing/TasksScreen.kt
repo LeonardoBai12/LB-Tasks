@@ -19,7 +19,6 @@ import androidx.compose.material.SnackbarResult
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -106,9 +105,8 @@ fun TasksScreen(
                     bottomSheetState.hide()
                 }
                 navController.navigate(
-                    TaskScreens.TaskDetailsScreen.name + "/${
-                        Task(title = "", taskType = selectedTaskType.value).toJson()
-                    }"
+                    TaskScreens.TaskDetailsScreen.name +
+                        "/${Task(title = "", taskType = selectedTaskType.value).toJson()}"
                 )
             }
         },

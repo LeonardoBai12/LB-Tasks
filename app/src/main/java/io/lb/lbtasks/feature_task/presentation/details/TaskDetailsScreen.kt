@@ -53,7 +53,7 @@ fun TaskDetailsScreen(
     val state = viewModel.state.value
 
     val title = remember {
-        mutableStateOf(state.task?.title  ?: "")
+        mutableStateOf(state.task?.title ?: "")
     }
 
     val description = remember {

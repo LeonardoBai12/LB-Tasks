@@ -28,7 +28,7 @@ class TaskDetailsVIewModel @Inject constructor(
 
     sealed class UiEvent {
         data class ShowToast(val message: String) : UiEvent()
-        object Finish: UiEvent()
+        object Finish : UiEvent()
     }
 
     init {

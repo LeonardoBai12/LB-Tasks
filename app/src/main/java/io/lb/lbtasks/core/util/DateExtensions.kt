@@ -4,23 +4,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-fun String.toDateCalendar(): Calendar {
-    val dateTimeFormat = SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH)
-
-    return Calendar.getInstance().apply {
-        this.time = dateTimeFormat.parse(this@toDateCalendar)!!
-    }
-}
-
-fun String.toTimeCalendar(): Calendar {
-    val dateTimeFormat = SimpleDateFormat("HH:mm", Locale.ENGLISH)
-
-    return Calendar.getInstance().apply {
-        this.time  = dateTimeFormat.parse(this@toTimeCalendar)!!
-    }
-}
-
-
 fun dateToString(
     day: Int,
     month: Int,
