@@ -73,6 +73,8 @@ class TaskViewModel @Inject constructor(
     private fun getTasks() {
         getTasksJob?.cancel()
         getTasksJob = useCases.getTasksUseCase().onEach { result ->
+            tasks.addAll(result)
+
             _state.value = state.value.copy(
                 tasks = result,
             )

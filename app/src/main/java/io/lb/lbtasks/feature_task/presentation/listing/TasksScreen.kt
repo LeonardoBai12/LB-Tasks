@@ -199,7 +199,6 @@ private fun TasksScaffold(
                 onSearch = { task ->
                     viewModel.onEvent(TaskEvent.SearchedForTask(task))
                 },
-                isEnabled = state.tasks.isNotEmpty()
             )
 
             LazyColumn {

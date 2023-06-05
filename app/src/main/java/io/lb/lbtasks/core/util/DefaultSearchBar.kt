@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -38,6 +39,7 @@ fun DefaultSearchBar(
     isEnabled: Boolean = true,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
 
     Box(modifier = modifier) {
         TextField(
@@ -68,11 +70,14 @@ fun DefaultSearchBar(
                 .fillMaxWidth()
                 .shadow(5.dp, CircleShape),
             keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Default,
+                imeAction = ImeAction.Search,
             ),
-            keyboardActions = KeyboardActions {
-                keyboardController?.hide()
-            },
+            keyboardActions = KeyboardActions(
+                onSearch = {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                }
+            ),
             leadingIcon = {
                 Icon(
                     modifier = Modifier.padding(start = 16.dp),
@@ -83,10 +88,12 @@ fun DefaultSearchBar(
             },
             trailingIcon = {
                 if (search.value.isNotEmpty()) {
-                    IconButton(onClick = {
-                        search.value = ""
-                        onSearch(search.value)
-                    }) {
+                    IconButton(
+                        onClick = {
+                            search.value = ""
+                            onSearch(search.value)
+                        }
+                    ) {
                         Icon(
                             modifier = Modifier.padding(end = 16.dp),
                             imageVector = Icons.Default.Close,
