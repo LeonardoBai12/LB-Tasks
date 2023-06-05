@@ -4,7 +4,6 @@ import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.ColumnScope
@@ -39,9 +38,9 @@ import kotlin.math.roundToInt
 @Composable
 fun SwipeableCard(
     onClickSwiped: () -> Unit,
-    swipedContent: @Composable (()-> Unit),
+    swipedContent: @Composable (() -> Unit),
     onClickCard: () -> Unit,
-    cardContent: @Composable (ColumnScope.()-> Unit),
+    cardContent: @Composable (ColumnScope.() -> Unit),
 ) {
     val isSwiped = remember {
         mutableStateOf(false)
@@ -136,7 +135,7 @@ fun SwipeableCard(
 fun DefaultCard(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    content: @Composable (ColumnScope.()-> Unit),
+    content: @Composable (ColumnScope.() -> Unit),
 ) {
     Card(
         modifier = modifier,

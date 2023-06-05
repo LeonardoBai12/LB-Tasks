@@ -44,7 +44,8 @@ fun TaskCard(
     SwipeableCard(
         onClickSwiped = {
             onClickDelete.invoke()
-        }, swipedContent = {
+        },
+        swipedContent = {
             Row(
                 modifier = Modifier.padding(6.dp),
                 horizontalArrangement = Arrangement.Start,
@@ -56,9 +57,11 @@ fun TaskCard(
                     tint = MaterialTheme.colorScheme.onErrorContainer
                 )
             }
-        }, onClickCard = {
+        },
+        onClickCard = {
             onClickCard.invoke(task.taskType)
-        }, cardContent = {
+        },
+        cardContent = {
             TaskCardContent(task)
         }
     )
@@ -99,7 +102,7 @@ private fun TaskCardContent(task: Task) {
                 )
                 Text(
                     text = "${task.deadlineDate?.replace("-", "/")}" +
-                            " ${task.deadlineTime}",
+                        " ${task.deadlineTime}",
                     fontSize = 12.sp
                 )
             }
