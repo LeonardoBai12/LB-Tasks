@@ -1,4 +1,4 @@
-package io.lb.lbtasks.feature_task.presentation.screens
+package io.lb.lbtasks.feature_task.presentation.details
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -17,10 +17,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,40 +30,57 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import io.lb.lbtasks.R
-import io.lb.lbtasks.core.extensions.datePicker
-import io.lb.lbtasks.core.extensions.timePicker
+import io.lb.lbtasks.core.util.createDatePickerDialog
+import io.lb.lbtasks.core.util.createTimePickerDialog
 import io.lb.lbtasks.core.presentation.widgets.DefaultFilledTextField
 import io.lb.lbtasks.core.presentation.widgets.DefaultTextButton
+import io.lb.lbtasks.core.util.showToast
+import kotlinx.coroutines.flow.collectLatest
 
 @ExperimentalMaterial3Api
 @ExperimentalComposeUiApi
 @Composable
 fun TaskDetailsScreen(
     navController: NavHostController,
-    category: String
+    viewModel: TaskDetailsVIewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
+    val state = viewModel.state.value
+
     val title = remember {
-        mutableStateOf("")
+        mutableStateOf(state.task?.title ?: "")
     }
 
     val description = remember {
-        mutableStateOf("")
+        mutableStateOf(state.task?.description ?: "")
     }
 
     val date = remember {
-        mutableStateOf("")
+        mutableStateOf(state.task?.deadlineDate ?: "")
     }
 
     val time = remember {
-        mutableStateOf("")
+        mutableStateOf(state.task?.deadlineTime ?: "")
     }
 
-    Text(text = category, fontSize = 48.sp)
+    LaunchedEffect(key1 = "TaskDetailsScreen") {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is TaskDetailsVIewModel.UiEvent.Finish -> {
+                    navController.navigateUp()
+                }
+                is TaskDetailsVIewModel.UiEvent.ShowToast -> {
+                    context.showToast(event.message)
+                }
+            }
+        }
+    }
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         contentColor = MaterialTheme.colorScheme.onBackground,
@@ -91,33 +108,44 @@ fun TaskDetailsScreen(
                 .padding(padding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "Nova tarefa",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-
             DefaultFilledTextField(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 text = title,
-                label = "Título",
+                label = stringResource(R.string.title),
             )
 
             DefaultFilledTextField(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 text = description,
                 isSingleLined = false,
-                label = "Descrição",
+                label = stringResource(R.string.description),
             )
 
             DateAndTimePickers(date, time)
 
             DefaultTextButton(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
                     .padding(horizontal = 72.dp, vertical = 16.dp),
-                text = "Finalizar"
+                text = stringResource(R.string.finish)
             ) {
-                navController.popBackStack()
+                state.task?.id?.let {
+                    viewModel.onEvent(
+                        TaskDetailsEvent.RequestUpdate(
+                            title = title.value,
+                            description = description.value,
+                            date = date.value,
+                            time = time.value,
+                        )
+                    )
+                } ?: viewModel.onEvent(
+                    TaskDetailsEvent.RequestInsert(
+                        title = title.value,
+                        description = description.value,
+                        date = date.value,
+                        time = time.value,
+                    )
+                )
             }
         }
     }
@@ -131,8 +159,8 @@ private fun DateAndTimePickers(
     time: MutableState<String>,
 ) {
     val context = LocalContext.current
-    val datePicker = context.datePicker(date, isSystemInDarkTheme())
-    val timePicker = context.timePicker(time, isSystemInDarkTheme())
+    val datePicker = context.createDatePickerDialog(date, isSystemInDarkTheme())
+    val timePicker = context.createTimePickerDialog(time, isSystemInDarkTheme())
 
     Row(
         modifier = Modifier
@@ -145,7 +173,7 @@ private fun DateAndTimePickers(
             isSingleLined = false,
             isEnabled = false,
             hasCloseButton = true,
-            label = "Prazo de entrega",
+            label = stringResource(id = R.string.deadline),
             icon = {
                 Icon(
                     Icons.Default.DateRange,
@@ -170,7 +198,7 @@ private fun DateAndTimePickers(
                     modifier = Modifier.clickable {
                         timePicker.show()
                     },
-                    contentDescription = "dateIcon"
+                    contentDescription = "timeIcon"
                 )
             },
         )

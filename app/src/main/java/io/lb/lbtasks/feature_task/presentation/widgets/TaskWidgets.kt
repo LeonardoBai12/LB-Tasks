@@ -21,28 +21,32 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.lb.lbtasks.R
 import io.lb.lbtasks.core.presentation.widgets.DefaultIconButton
 import io.lb.lbtasks.core.presentation.widgets.DefaultTextButton
 import io.lb.lbtasks.feature_task.domain.model.TaskType
+import io.lb.lbtasks.ui.theme.DarkYellow
+import io.lb.lbtasks.ui.theme.Yellow
 
 @Composable
 fun NewTaskBottomSheetContent(
-    selectedCategory: MutableState<String>,
+    selectedTaskType: MutableState<String>,
     onClick: () -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(vertical = 24.dp),
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Escolha uma atividade",
+            text = stringResource(id = R.string.choose_an_activity),
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp
         )
@@ -55,17 +59,16 @@ fun NewTaskBottomSheetContent(
         ) {
             items(TaskType.values()) {
                 IconButtonTextWidget(
-                    text = it.title,
-                    painterId = it.painterId,
-                    selectedCategory = selectedCategory
+                    taskType = it,
+                    selectedTaskType = selectedTaskType
                 )
             }
         }
 
         DefaultTextButton(
             modifier = Modifier.width(200.dp),
-            text = "Criar nova tarefa",
-            enabled = selectedCategory.value.isNotEmpty(),
+            text = stringResource(id = R.string.create_new_task),
+            enabled = selectedTaskType.value.isNotEmpty(),
             onClick = onClick
         )
     }
@@ -73,9 +76,8 @@ fun NewTaskBottomSheetContent(
 
 @Composable
 fun IconButtonTextWidget(
-    text: String,
-    painterId: Int,
-    selectedCategory: MutableState<String>,
+    taskType: TaskType,
+    selectedTaskType: MutableState<String>,
 ) {
     Column(
         modifier = Modifier.padding(8.dp),
@@ -84,27 +86,30 @@ fun IconButtonTextWidget(
     ) {
         DefaultIconButton(
             modifier = Modifier.takeIf {
-                text == selectedCategory.value
+                taskType.name == selectedTaskType.value
             }?.border(
                 width = 2.dp,
                 shape = RoundedCornerShape(16.dp),
                 brush = Brush.horizontalGradient(
                     listOf(
-                        Color(0xFFFFB700),
-                        Color(0xFFFFDD00),
-                        Color(0xFFFFB700)
+                        DarkYellow,
+                        Yellow,
+                        DarkYellow
                     )
                 )
             ) ?: Modifier.size(48.dp),
             iconModifier = Modifier.fillMaxSize(0.7f),
-            painter = painterResource(id = painterId),
-            contentDescription = "${text}Icon",
+            painter = painterResource(id = taskType.painterId),
+            contentDescription = "${taskType.name}Icon",
             shape = RoundedCornerShape(16.dp),
             onClick = {
-                selectedCategory.value = text
+                selectedTaskType.value = taskType.name
             }
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = text, color = MaterialTheme.colorScheme.onPrimaryContainer)
+        Text(
+            text = stringResource(id = taskType.titleId),
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
     }
 }

@@ -20,8 +20,11 @@ import io.lb.lbtasks.R
 @Composable
 fun LBTasksLogoIcon() {
     DefaultIcon(
-        modifier = Modifier.size(72.dp),
+        modifier = Modifier.size(60.dp),
         painter = painterResource(id = R.drawable.ic_launcher_foreground),
+        shape = RoundedCornerShape(16.dp),
+        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
         contentDescription = "LoginHomeScreenIcon",
     )
 }

@@ -10,8 +10,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import io.lb.lbtasks.feature_task.presentation.screens.TaskDetailsScreen
-import io.lb.lbtasks.feature_task.presentation.screens.TasksScreen
+import io.lb.lbtasks.core.util.TASK
+import io.lb.lbtasks.feature_task.presentation.details.TaskDetailsScreen
+import io.lb.lbtasks.feature_task.presentation.listing.TasksScreen
 
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
@@ -29,18 +30,15 @@ fun MainNavigation() {
         }
 
         composable(
-            route = TaskScreens.TaskDetailsScreen.name + "/{task}",
+            route = TaskScreens.TaskDetailsScreen.name + "/{$TASK}",
             arguments = listOf(
-                navArgument(name = "task") {
+                navArgument(name = TASK) {
                     type = NavType.StringType
                 }
             )
         ) { backStackEntry ->
-            backStackEntry.arguments?.getString("task")?.let {
-                TaskDetailsScreen(
-                    navController = navController,
-                    it
-                )
+            backStackEntry.arguments?.getString(TASK)?.let {
+                TaskDetailsScreen(navController = navController)
             }
         }
     }
