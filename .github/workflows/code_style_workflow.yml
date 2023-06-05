@@ -19,7 +19,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Validate Code Style
-        run: ./gradlew clean ktlintCheck --no-daemon
+        run: ./gradlew ktlintCheck --no-daemon
 
       - name: Upload KtLint Reports
         if: ${{ always() }}
