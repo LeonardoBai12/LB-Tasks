@@ -21,7 +21,7 @@ class InsertTaskUseCase(
                 title = title,
                 description = description,
                 taskType = taskType,
-                deadlineDate = deadlineDate,
+                deadlineDate = deadlineDate.replace("/", "-"),
                 deadlineTime = deadlineTime,
             )
         )

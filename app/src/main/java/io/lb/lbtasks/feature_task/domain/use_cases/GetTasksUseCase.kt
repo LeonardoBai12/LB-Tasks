@@ -6,5 +6,5 @@ import io.lb.lbtasks.feature_task.domain.repository.TaskRepository
 class GetTasksUseCase(
     private val repository: TaskRepository
 ) {
-    suspend operator fun invoke() = repository.getTasks()
+    operator fun invoke() = repository.getTasks()
 }

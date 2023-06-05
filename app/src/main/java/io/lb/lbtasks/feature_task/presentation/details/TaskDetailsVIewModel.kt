@@ -26,18 +26,16 @@ class TaskDetailsVIewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    private var task: Task? = null
-
     sealed class UiEvent {
         data class ShowToast(val message: String) : UiEvent()
-        object Back: UiEvent()
+        object Finish: UiEvent()
     }
 
     init {
         val savedJson: String? = savedStateHandle[TASK]
 
         savedJson?.let {
-            task = Task.fromJson(it)
+            _state.value = _state.value.copy(task = Task.fromJson(it))
         }
     }
 
@@ -73,17 +71,17 @@ class TaskDetailsVIewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                task ?: return@launch
+                _state.value.task ?: return@launch
 
                 useCases.insertTaskUseCase(
                     title = title,
                     description = description,
-                    taskType = task!!.taskType,
+                    taskType = _state.value.task!!.taskType,
                     deadlineDate = date,
                     deadlineTime = time,
                 )
 
-                _eventFlow.emit(UiEvent.Back)
+                _eventFlow.emit(UiEvent.Finish)
             } catch (e: Exception) {
                 e.message?.let {
                     _eventFlow.emit(UiEvent.ShowToast(it))
@@ -100,17 +98,17 @@ class TaskDetailsVIewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                task ?: return@launch
+                _state.value.task ?: return@launch
 
                 useCases.updateTaskUseCase(
-                    task = task!!,
+                    task = _state.value.task!!,
                     title = title,
                     description = description,
                     deadlineDate = date,
                     deadlineTime = time,
                 )
 
-                _eventFlow.emit(UiEvent.Back)
+                _eventFlow.emit(UiEvent.Finish)
             } catch (e: Exception) {
                 e.message?.let {
                     _eventFlow.emit(UiEvent.ShowToast(it))
@@ -121,8 +119,8 @@ class TaskDetailsVIewModel @Inject constructor(
 
     private fun deleteTask() {
         viewModelScope.launch {
-            task ?: return@launch
-            useCases.deleteTaskUseCase(task!!)
+            _state.value.task ?: return@launch
+            useCases.deleteTaskUseCase(_state.value.task!!)
         }
     }
 }

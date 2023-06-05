@@ -189,14 +189,12 @@ private fun TasksScaffold(
                 isEnabled = !state.loading && state.tasks.isNotEmpty()
             )
 
-            if (state.tasks.isNotEmpty()) {
-                LazyColumn {
-                    items(state.tasks) { task ->
-                        TaskCard(task = task) {
-                            navController.navigate(
-                                TaskScreens.TaskDetailsScreen.name + "/${task.toJson()}"
-                            )
-                        }
+            LazyColumn {
+                items(state.tasks) { task ->
+                    TaskCard(task = task) {
+                        navController.navigate(
+                            TaskScreens.TaskDetailsScreen.name + "/${task.toJson()}"
+                        )
                     }
                 }
             }

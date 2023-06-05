@@ -17,7 +17,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -32,9 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import io.lb.lbtasks.R
@@ -43,9 +40,6 @@ import io.lb.lbtasks.core.util.createTimePickerDialog
 import io.lb.lbtasks.core.presentation.widgets.DefaultFilledTextField
 import io.lb.lbtasks.core.presentation.widgets.DefaultTextButton
 import io.lb.lbtasks.core.util.showToast
-import io.lb.lbtasks.feature_task.domain.model.Task
-import io.lb.lbtasks.feature_task.presentation.listing.TaskEvent
-import io.lb.lbtasks.feature_task.presentation.listing.TaskViewModel
 import kotlinx.coroutines.flow.collectLatest
 
 @ExperimentalMaterial3Api
@@ -77,8 +71,8 @@ fun TaskDetailsScreen(
     LaunchedEffect(key1 = "TaskDetailsScreen") {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
-                TaskDetailsVIewModel.UiEvent.Back -> {
-                    navController.popBackStack()
+                is TaskDetailsVIewModel.UiEvent.Finish -> {
+                    navController.navigateUp()
                 }
                 is TaskDetailsVIewModel.UiEvent.ShowToast -> {
                     context.showToast(event.message)
@@ -114,12 +108,6 @@ fun TaskDetailsScreen(
                 .padding(padding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = stringResource(id = R.string.new_task),
-                fontSize = 24.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-
             DefaultFilledTextField(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 text = title,

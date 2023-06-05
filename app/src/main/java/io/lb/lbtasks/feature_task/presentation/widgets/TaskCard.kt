@@ -71,7 +71,8 @@ fun TaskCard(
                     fontSize = 18.sp
                 )
                 Text(
-                    text = "${task.deadlineDate} ${task.deadlineTime}",
+                    text = "${task.deadlineDate?.replace("-", "/")}" +
+                        " ${task.deadlineTime}",
                     fontSize = 12.sp
                 )
             }

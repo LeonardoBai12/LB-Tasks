@@ -22,7 +22,7 @@ class UpdateTaskUseCase(
             task.apply {
                 this.title = title
                 this.description = description
-                this.deadlineDate = deadlineDate
+                this.deadlineDate = deadlineDate.replace("/", "-")
                 this.deadlineTime = deadlineTime
             }
         )

@@ -13,6 +13,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject
@@ -29,6 +31,7 @@ class TaskViewModel @Inject constructor(
 
     private val tasks = mutableListOf<Task>()
     private var searchJob: Job? = null
+    private var getTasksJob: Job? = null
 
     sealed class UiEvent {
         data class ShowToast(val message: String) : UiEvent()
@@ -60,35 +63,34 @@ class TaskViewModel @Inject constructor(
     }
 
     private fun getTasks() {
-        viewModelScope.launch {
-            useCases.getTasksUseCase().collect { result ->
-                when (result) {
-                    is Resource.Success -> {
-                        result.data?.let {
-                            tasks.addAll(it)
+        getTasksJob?.cancel()
+        getTasksJob = useCases.getTasksUseCase().onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    result.data?.let {
+                        tasks.addAll(it)
 
-                            _state.value = state.value.copy(
-                                tasks = it,
-                            )
-                        }
-                    }
-                    is Resource.Error -> {
                         _state.value = state.value.copy(
-                            tasks = emptyList(),
-                        )
-
-                        result.message?.let {
-                            _eventFlow.emit(UiEvent.ShowToast(it))
-                        }
-                    }
-                    is Resource.Loading -> {
-                        _state.value = state.value.copy(
-                            loading = result.isLoading,
+                            tasks = it,
                         )
                     }
                 }
+                is Resource.Error -> {
+                    _state.value = state.value.copy(
+                        tasks = emptyList(),
+                    )
+
+                    result.message?.let {
+                        _eventFlow.emit(UiEvent.ShowToast(it))
+                    }
+                }
+                is Resource.Loading -> {
+                    _state.value = state.value.copy(
+                        loading = result.isLoading,
+                    )
+                }
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
     private fun deleteTask(task: Task) {

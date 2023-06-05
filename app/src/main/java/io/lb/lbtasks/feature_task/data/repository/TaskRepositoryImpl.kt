@@ -14,7 +14,7 @@ class TaskRepositoryImpl(
         dao.deleteTask(task)
     }
 
-    override suspend fun getTasks(): Flow<Resource<List<Task>>> {
+    override fun getTasks(): Flow<Resource<List<Task>>> {
         return flow {
             emit(Resource.Loading(true))
 
