@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import io.lb.lbtasks.feature_task.domain.model.Task
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskDao {
@@ -23,8 +24,8 @@ interface TaskDao {
         """
             SELECT * 
             FROM tasks
-            ORDER BY deadlineDate, deadlineTime
+            ORDER BY deadlineDate, deadlineTime DESC
         """
     )
-    suspend fun searchTasks(): List<Task>
+    fun searchTasks(): Flow<List<Task>>
 }

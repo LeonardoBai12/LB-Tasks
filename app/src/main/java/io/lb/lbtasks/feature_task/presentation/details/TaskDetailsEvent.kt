@@ -1,8 +1,6 @@
 package io.lb.lbtasks.feature_task.presentation.details
 
 sealed class TaskDetailsEvent {
-    object RequestDelete : TaskDetailsEvent()
-
     data class RequestInsert(
         val title: String,
         val description: String,

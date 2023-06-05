@@ -57,9 +57,6 @@ class TaskDetailsVIewModel @Inject constructor(
                     time = event.time,
                 )
             }
-            is TaskDetailsEvent.RequestDelete -> {
-                deleteTask()
-            }
         }
     }
 

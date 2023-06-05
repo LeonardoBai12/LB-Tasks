@@ -129,7 +129,16 @@ fun TaskDetailsScreen(
                     .padding(horizontal = 72.dp, vertical = 16.dp),
                 text = stringResource(R.string.finish)
             ) {
-                viewModel.onEvent(
+                state.task?.id?.let {
+                    viewModel.onEvent(
+                        TaskDetailsEvent.RequestUpdate(
+                            title = title.value,
+                            description = description.value,
+                            date = date.value,
+                            time = time.value,
+                        )
+                    )
+                } ?: viewModel.onEvent(
                     TaskDetailsEvent.RequestInsert(
                         title = title.value,
                         description = description.value,

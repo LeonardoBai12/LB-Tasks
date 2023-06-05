@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.lb.lbtasks.core.util.Resource
 import io.lb.lbtasks.core.util.filterBy
 import io.lb.lbtasks.feature_task.domain.model.Task
 import io.lb.lbtasks.feature_task.domain.use_cases.TaskUseCases
@@ -16,7 +15,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
@@ -65,31 +63,9 @@ class TaskViewModel @Inject constructor(
     private fun getTasks() {
         getTasksJob?.cancel()
         getTasksJob = useCases.getTasksUseCase().onEach { result ->
-            when (result) {
-                is Resource.Success -> {
-                    result.data?.let {
-                        tasks.addAll(it)
-
-                        _state.value = state.value.copy(
-                            tasks = it,
-                        )
-                    }
-                }
-                is Resource.Error -> {
-                    _state.value = state.value.copy(
-                        tasks = emptyList(),
-                    )
-
-                    result.message?.let {
-                        _eventFlow.emit(UiEvent.ShowToast(it))
-                    }
-                }
-                is Resource.Loading -> {
-                    _state.value = state.value.copy(
-                        loading = result.isLoading,
-                    )
-                }
-            }
+            _state.value = state.value.copy(
+                tasks = result,
+            )
         }.launchIn(viewModelScope)
     }
 
