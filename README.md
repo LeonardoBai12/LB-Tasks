@@ -25,7 +25,7 @@ The application is built using the following technologies:
 
 ## Getting Started
 
-1. Download the LBTasks.apk file from the [Build and Deploy APK](https://github.com/LeonardoBai12/LBTasks/actions/workflows/build_and_deploy_workflow.yml) action artifacts.
+1. Download the LBTasks.apk file from the [Build and Deploy APK](https://github.com/LeonardoBai12/LB-Tasks/actions/workflows/build_and_deploy_workflow.yml) action artifacts.
 2. Install the APK on your Android device.
 3. Use the application to schedule your tasks. =)
 
@@ -37,8 +37,3 @@ To ensure high-quality code, the following tools and processes are used before m
 * All unit tests are run to ensure code functionality and quality.
 
 This process helps maintain code consistency and quality throughout the project.
-
-## Coverage Report
-
-An unit test coverage report is generated and published for every push to the main branch.\
-To access the test coverage report, download the _lb-tasks-coverage-report_ file from the [Coverage Report](https://github.com/LeonardoBai12/LBTasks/actions/workflows/coverage_report_worflow.yml) action artifacts.
