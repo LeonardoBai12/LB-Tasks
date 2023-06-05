@@ -72,7 +72,8 @@ fun DefaultFilledTextField(
             ),
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Done,
-                keyboardType = keyboardType
+                keyboardType = keyboardType,
+                capitalization = KeyboardCapitalization.Sentences
             ),
             keyboardActions = KeyboardActions(
                 onDone = {

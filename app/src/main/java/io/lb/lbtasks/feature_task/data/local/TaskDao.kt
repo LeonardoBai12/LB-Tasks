@@ -24,7 +24,7 @@ interface TaskDao {
         """
             SELECT * 
             FROM tasks
-            ORDER BY deadlineDate, deadlineTime DESC
+            ORDER BY deadlineDate, deadlineTime
         """
     )
     fun searchTasks(): Flow<List<Task>>

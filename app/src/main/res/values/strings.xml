@@ -12,4 +12,6 @@
     <string name="description">Descrição</string>
     <string name="deadline">Prazo de entrega</string>
     <string name="finish">Finalizar</string>
+    <string name="undo">Desfazer</string>
+    <string name="task_deleted">Tarefa apagada</string>
 </resources>

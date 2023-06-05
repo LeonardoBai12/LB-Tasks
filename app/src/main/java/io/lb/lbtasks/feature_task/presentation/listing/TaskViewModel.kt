@@ -31,6 +31,8 @@ class TaskViewModel @Inject constructor(
     private var searchJob: Job? = null
     private var getTasksJob: Job? = null
 
+    private var recentlyDeletedTask: Task? = null
+
     sealed class UiEvent {
         data class ShowToast(val message: String) : UiEvent()
     }
@@ -55,7 +57,15 @@ class TaskViewModel @Inject constructor(
                 }
             }
             is TaskEvent.RequestDelete -> {
-                deleteTask(event.task)
+                with(event.task) {
+                    deleteTask(this)
+                    recentlyDeletedTask = this
+                }
+            }
+            is TaskEvent.RestoreTask -> {
+                recentlyDeletedTask?.let {
+                    insertTask(it)
+                }
             }
         }
     }
@@ -67,6 +77,20 @@ class TaskViewModel @Inject constructor(
                 tasks = result,
             )
         }.launchIn(viewModelScope)
+    }
+
+    private fun insertTask(task: Task) {
+        viewModelScope.launch {
+            with(task) {
+                useCases.insertTaskUseCase(
+                    title = title,
+                    description = description ?: "",
+                    taskType = taskType,
+                    deadlineDate = deadlineDate ?: "",
+                    deadlineTime = deadlineTime ?: ""
+                )
+            }
+        }
     }
 
     private fun deleteTask(task: Task) {

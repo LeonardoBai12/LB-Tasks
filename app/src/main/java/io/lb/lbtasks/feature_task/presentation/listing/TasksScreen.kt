@@ -13,9 +13,13 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.SnackbarResult
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -128,14 +132,23 @@ private fun TasksScaffold(
     bottomSheetState: ModalBottomSheetState,
     viewModel: TaskViewModel,
 ) {
+    val context = LocalContext.current
     val state = viewModel.state.value
 
     val search = remember {
         mutableStateOf("")
     }
 
+    val snackBarHostState = remember {
+        SnackbarHostState()
+    }
+    val scope = rememberCoroutineScope()
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState)
+        },
         floatingActionButton = {
             FloatingActionButton(
                 containerColor = MaterialTheme.colorScheme.primary,
@@ -191,11 +204,27 @@ private fun TasksScaffold(
 
             LazyColumn {
                 items(state.tasks) { task ->
-                    TaskCard(task = task) {
-                        navController.navigate(
-                            TaskScreens.TaskDetailsScreen.name + "/${task.toJson()}"
-                        )
-                    }
+                    TaskCard(
+                        task = task,
+                        onClickCard = {
+                            navController.navigate(
+                                TaskScreens.TaskDetailsScreen.name + "/${task.toJson()}"
+                            )
+                        },
+                        onClickDelete = {
+                            viewModel.onEvent(TaskEvent.RequestDelete(task))
+
+                            scope.launch {
+                                val result = snackBarHostState.showSnackbar(
+                                    message = context.getString(R.string.task_deleted),
+                                    actionLabel = context.getString(R.string.undo)
+                                )
+                                if (result == SnackbarResult.ActionPerformed) {
+                                    viewModel.onEvent(TaskEvent.RestoreTask)
+                                }
+                            }
+                        }
+                    )
                 }
             }
         }
