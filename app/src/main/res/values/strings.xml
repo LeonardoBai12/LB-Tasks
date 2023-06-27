@@ -22,4 +22,7 @@
     <string name="login_google">Login with Google</string>
     <string name="sign_in_google">Sign in with Google</string>
     <string name="enter_your_information">Enter your information</string>
+    <string name="sign_in_successful">Sign in successful</string>
+    <string name="something_went_wrong">Oops! Something went wrong!</string>
+    <string name="signed_out">Signed out</string>
 </resources>

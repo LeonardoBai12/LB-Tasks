@@ -1,5 +1,6 @@
 package io.lb.lbtasks.task.presentation.listing
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -48,6 +49,7 @@ import io.lb.lbtasks.core.util.DefaultSearchBar
 import io.lb.lbtasks.core.util.showToast
 import io.lb.lbtasks.task.domain.model.Task
 import io.lb.lbtasks.core.presentation.navigation.MainScreens
+import io.lb.lbtasks.sign_in.domain.UserData
 import io.lb.lbtasks.task.presentation.widgets.NewTaskBottomSheetContent
 import io.lb.lbtasks.task.presentation.widgets.TaskCard
 import kotlinx.coroutines.CoroutineScope
@@ -60,6 +62,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun TasksScreen(
     navController: NavHostController,
+    userData: UserData?,
+    onSignOut: () -> Unit,
     viewModel: TaskViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -78,6 +82,12 @@ fun TasksScreen(
     )
     val lifecycle = LocalLifecycleOwner.current
     val coroutineScope = rememberCoroutineScope()
+
+    BackHandler(enabled = bottomSheetState.isVisible) {
+        coroutineScope.launch {
+            bottomSheetState.hide()
+        }
+    }
 
     LaunchedEffect(key1 = "launchedEffectKey") {
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {

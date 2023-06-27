@@ -1,4 +1,4 @@
-package io.lb.lbtasks.login.presentation.widgets
+package io.lb.lbtasks.sign_in.presentation.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,11 +34,15 @@ import androidx.navigation.NavHostController
 import io.lb.lbtasks.R
 import io.lb.lbtasks.core.presentation.widgets.DefaultTextButton
 import io.lb.lbtasks.core.presentation.widgets.DefaultTextField
+import io.lb.lbtasks.sign_in.presentation.sing_in.SignInState
 
 @ExperimentalComposeUiApi
 @ExperimentalMaterial3Api
 @Composable
-fun LoginBottomSheetContent(navController: NavHostController) {
+fun LoginBottomSheetContent(
+    state: SignInState,
+    onSignInClick: () -> Unit
+) {
     val email = remember {
         mutableStateOf("")
     }

@@ -1,5 +1,6 @@
-package io.lb.lbtasks.login.presentation.screens
+package io.lb.lbtasks.sign_in.presentation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,13 +27,13 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import io.lb.lbtasks.R
 import io.lb.lbtasks.core.presentation.widgets.DefaultTextButton
-import io.lb.lbtasks.login.presentation.widgets.HomeLoginBackground
-import io.lb.lbtasks.login.presentation.widgets.HomeLoginHeader
-import io.lb.lbtasks.login.presentation.widgets.LoginBottomSheetContent
-import io.lb.lbtasks.login.presentation.widgets.SignInBottomSheetContent
+import io.lb.lbtasks.sign_in.presentation.login.LoginBottomSheetContent
+import io.lb.lbtasks.sign_in.presentation.sing_in.SignInState
+import io.lb.lbtasks.sign_in.presentation.widgets.HomeLoginBackground
+import io.lb.lbtasks.sign_in.presentation.widgets.HomeLoginHeader
+import io.lb.lbtasks.sign_in.presentation.widgets.SignInBottomSheetContent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -41,7 +42,10 @@ import kotlinx.coroutines.launch
 @ExperimentalComposeUiApi
 @ExperimentalMaterial3Api
 @Composable
-fun LoginHomeScreen(navController: NavHostController) {
+fun SignInScreen(
+    state: SignInState,
+    onSignInClick: () -> Unit
+) {
     val bottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         skipHalfExpanded = true
@@ -53,14 +57,20 @@ fun LoginHomeScreen(navController: NavHostController) {
 
     HomeLoginBackground()
 
+    BackHandler(enabled = bottomSheetState.isVisible) {
+        coroutineScope.launch {
+            bottomSheetState.hide()
+        }
+    }
+
     ModalBottomSheetLayout(
         sheetState = bottomSheetState,
         sheetShape = RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp),
         sheetBackgroundColor = MaterialTheme.colorScheme.surface,
         sheetContentColor = MaterialTheme.colorScheme.onSurface,
         sheetContent = {
-            if (isLogin.value) LoginBottomSheetContent(navController = navController)
-            else SignInBottomSheetContent(navController = navController)
+            if (isLogin.value) LoginBottomSheetContent(state, onSignInClick)
+            else SignInBottomSheetContent(state, onSignInClick)
         },
     ) {
         Column(

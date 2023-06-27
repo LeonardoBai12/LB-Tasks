@@ -1,4 +1,4 @@
-package io.lb.lbtasks.login.presentation.widgets
+package io.lb.lbtasks.sign_in.presentation.widgets
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,21 +25,26 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import io.lb.lbtasks.R
 import io.lb.lbtasks.core.presentation.widgets.DefaultTextButton
 import io.lb.lbtasks.core.presentation.widgets.DefaultTextField
+import io.lb.lbtasks.core.util.showToast
+import io.lb.lbtasks.sign_in.presentation.sing_in.SignInState
 
 @ExperimentalMaterial3Api
 @ExperimentalComposeUiApi
 @Composable
-fun SignInBottomSheetContent(navController: NavHostController) {
+fun SignInBottomSheetContent(
+    state: SignInState,
+    onSignInClick: () -> Unit
+) {
     val email = remember {
         mutableStateOf("")
     }
@@ -47,6 +53,13 @@ fun SignInBottomSheetContent(navController: NavHostController) {
     }
     val repeatedPassword = remember {
         mutableStateOf("")
+    }
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = state.signInError) {
+        state.signInError?.let { error ->
+            context.showToast(error)
+        }
     }
 
     Surface(
@@ -70,14 +83,14 @@ fun SignInBottomSheetContent(navController: NavHostController) {
             )
 
             SignInTextFields(email, password, repeatedPassword)
-            SignInButtons()
+            SignInButtons(onSignInClick)
         }
     }
 }
 
 @ExperimentalMaterial3Api
 @Composable
-private fun SignInButtons() {
+private fun SignInButtons(onSignInClick: () -> Unit) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -101,7 +114,7 @@ private fun SignInButtons() {
             containerColor = Color.White,
             contentColor = Color.DarkGray,
             onClick = {
-
+                onSignInClick.invoke()
             },
         )
     }

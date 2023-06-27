@@ -1,4 +1,4 @@
-package io.lb.lbtasks.login.presentation.widgets
+package io.lb.lbtasks.sign_in.presentation.widgets
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column

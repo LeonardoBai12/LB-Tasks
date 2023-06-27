@@ -1,7 +1,7 @@
 package io.lb.lbtasks.core.presentation.navigation
 
 enum class MainScreens {
-    LoginHomeScreen,
+    SignInScreen,
     TaskScreen,
     TaskDetailsScreen;
 }
