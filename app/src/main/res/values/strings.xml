@@ -14,4 +14,12 @@
     <string name="finish">Finalizar</string>
     <string name="undo">Desfazer</string>
     <string name="task_deleted">Tarefa apagada</string>
+    <string name="password">Password</string>
+    <string name="repeat_password">Repeat your password</string>
+    <string name="sign_in">Sign in</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="login_google">Login with Google</string>
+    <string name="sign_in_google">Sign in with Google</string>
+    <string name="enter_your_information">Enter your information</string>
 </resources>

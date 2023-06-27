@@ -27,6 +27,52 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
+@ExperimentalComposeUiApi
+@Composable
+fun DefaultTextField(
+    modifier: Modifier = Modifier,
+    text: String,
+    label: String,
+    icon: @Composable (() -> Unit)? = null,
+    isEnabled: Boolean = true,
+    isSingleLined: Boolean = true,
+    keyboardType: KeyboardType = KeyboardType.Ascii,
+    onValueChange: (String) -> Unit,
+    onImeAction: () -> Unit = {},
+) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    TextField(
+        modifier = modifier,
+        value = text,
+        singleLine = isSingleLined,
+        leadingIcon = icon,
+        enabled = isEnabled,
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.Transparent,
+            unfocusedContainerColor = Color.Transparent,
+            focusedPlaceholderColor = Color.Transparent,
+            focusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+        ),
+        label = {
+            Text(text = label)
+        },
+        keyboardOptions = KeyboardOptions.Default.copy(
+            imeAction = ImeAction.Done,
+            keyboardType = keyboardType
+        ),
+        keyboardActions = KeyboardActions(
+            onDone = {
+                onImeAction.invoke()
+                keyboardController?.hide()
+            }
+        ),
+        onValueChange = {
+            onValueChange.invoke(it)
+        }
+    )
+}
+
 @ExperimentalMaterial3Api
 @ExperimentalComposeUiApi
 @Composable

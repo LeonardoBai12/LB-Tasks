@@ -3,6 +3,8 @@ plugins {
     id 'dagger.hilt.android.plugin'
     id 'com.android.application'
     id 'kotlin-kapt'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -52,6 +54,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:31.2.3')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-auth-ktx'
 
     implementation 'androidx.core:core-ktx:1.10.0'
     implementation 'androidx.compose.material3:material3:1.1.0-rc01'
@@ -64,6 +67,7 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.7.1'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.core:core-ktx:1.10.0'
+    implementation 'com.google.android.gms:play-services-auth:20.1.0'
     testImplementation 'junit:junit:4.13.2'
     testImplementation "io.mockk:mockk:1.13.4"
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
@@ -95,4 +99,5 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 
     implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'com.google.android.recaptcha:recaptcha:18.2.1'
 }
