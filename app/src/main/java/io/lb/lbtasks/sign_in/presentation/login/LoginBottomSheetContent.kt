@@ -71,40 +71,17 @@ fun LoginBottomSheetContent(
             )
 
             SignInTextFields(email, password)
-            LoginButtons()
+
+            DefaultTextButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 72.dp, vertical = 16.dp),
+                text = stringResource(id = R.string.login),
+                onClick = {
+
+                },
+            )
         }
-    }
-}
-
-@ExperimentalMaterial3Api
-@Composable
-private fun LoginButtons() {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        DefaultTextButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 72.dp, vertical = 16.dp),
-            text = stringResource(id = R.string.login),
-            onClick = {
-
-            },
-        )
-        DefaultTextButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 72.dp)
-                .shadow(2.dp, shape = RoundedCornerShape(36.dp)),
-            text = stringResource(id = R.string.login_google),
-            icon = painterResource(id = R.drawable.ic_google),
-            containerColor = Color.White,
-            contentColor = Color.DarkGray,
-            onClick = {
-
-            },
-        )
     }
 }
 

@@ -18,6 +18,7 @@ import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,16 +26,20 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.lb.lbtasks.R
 import io.lb.lbtasks.core.presentation.widgets.DefaultTextButton
+import io.lb.lbtasks.core.util.showToast
 import io.lb.lbtasks.sign_in.presentation.login.LoginBottomSheetContent
 import io.lb.lbtasks.sign_in.presentation.sing_in.SignInState
 import io.lb.lbtasks.sign_in.presentation.widgets.HomeLoginBackground
 import io.lb.lbtasks.sign_in.presentation.widgets.HomeLoginHeader
 import io.lb.lbtasks.sign_in.presentation.widgets.SignInBottomSheetContent
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @ExperimentalAnimationApi
@@ -53,6 +58,14 @@ fun SignInScreen(
     val coroutineScope = rememberCoroutineScope()
     val isLogin = remember {
         mutableStateOf(true)
+    }
+
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = state.signInError) {
+        state.signInError?.let { error ->
+            context.showToast(error)
+        }
     }
 
     HomeLoginBackground()
@@ -79,27 +92,30 @@ fun SignInScreen(
             horizontalAlignment = Alignment.Start
         ) {
             HomeLoginHeader()
-            LoginButtonsColumn(coroutineScope, bottomSheetState, isLogin)
-    }
+            LoginButtonsColumn(onSignInClick, bottomSheetState, isLogin)
+        }
     }
 }
 
 @ExperimentalMaterialApi
 @Composable
 private fun LoginButtonsColumn(
-    coroutineScope: CoroutineScope,
+    onSignInClick: () -> Unit,
     bottomSheetState: ModalBottomSheetState,
     isLogin: MutableState<Boolean>
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(72.dp),
+            .padding(60.dp),
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         DefaultTextButton(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
+                .padding(bottom = 16.dp),
             text = stringResource(id = R.string.login),
             onClick = {
                 coroutineScope.launch {
@@ -109,18 +125,29 @@ private fun LoginButtonsColumn(
             },
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
-
         DefaultTextButton(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
+                .padding(bottom = 16.dp),
             text = stringResource(id = R.string.sign_in),
-            containerColor = MaterialTheme.colorScheme.onPrimary,
-            contentColor = MaterialTheme.colorScheme.primary,
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
             onClick = {
                 coroutineScope.launch {
                     isLogin.value = false
                     bottomSheetState.show()
                 }
+            },
+        )
+
+        DefaultTextButton(
+            modifier = Modifier.fillMaxWidth()
+                .shadow(2.dp, shape = RoundedCornerShape(36.dp)),
+            text = stringResource(id = R.string.continue_with_google),
+            icon = painterResource(id = R.drawable.ic_google),
+            containerColor = Color.White,
+            contentColor = Color.DarkGray,
+            onClick = {
+                onSignInClick.invoke()
             },
         )
     }

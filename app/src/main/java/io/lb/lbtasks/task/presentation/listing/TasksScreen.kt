@@ -19,13 +19,22 @@ import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.SnackbarResult
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -44,11 +53,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
 import io.lb.lbtasks.R
+import io.lb.lbtasks.core.presentation.navigation.DrawerBody
+import io.lb.lbtasks.core.presentation.navigation.DrawerHeader
 import io.lb.lbtasks.core.presentation.widgets.LBTasksLogoIcon
 import io.lb.lbtasks.core.util.DefaultSearchBar
 import io.lb.lbtasks.core.util.showToast
 import io.lb.lbtasks.task.domain.model.Task
 import io.lb.lbtasks.core.presentation.navigation.MainScreens
+import io.lb.lbtasks.core.presentation.navigation.MenuItem
+import io.lb.lbtasks.core.presentation.widgets.AppBar
 import io.lb.lbtasks.sign_in.domain.UserData
 import io.lb.lbtasks.task.presentation.widgets.NewTaskBottomSheetContent
 import io.lb.lbtasks.task.presentation.widgets.TaskCard
@@ -73,6 +86,7 @@ fun TasksScreen(
 
     val bottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
+        skipHalfExpanded = true,
         confirmStateChange = {
             if (it == ModalBottomSheetValue.Hidden) {
                 selectedTaskType.value = ""
@@ -125,6 +139,8 @@ fun TasksScreen(
             navController = navController,
             coroutineScope = coroutineScope,
             bottomSheetState = bottomSheetState,
+            userData = userData,
+            onSignOut = onSignOut,
             viewModel = viewModel,
         )
     }
@@ -138,6 +154,8 @@ private fun TasksScaffold(
     navController: NavHostController,
     coroutineScope: CoroutineScope,
     bottomSheetState: ModalBottomSheetState,
+    userData: UserData?,
+    onSignOut: () -> Unit,
     viewModel: TaskViewModel,
 ) {
     val context = LocalContext.current
@@ -150,88 +168,117 @@ private fun TasksScaffold(
     val snackBarHostState = remember {
         SnackbarHostState()
     }
-    val scope = rememberCoroutineScope()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        snackbarHost = {
-            SnackbarHost(hostState = snackBarHostState)
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                containerColor = MaterialTheme.colorScheme.primary,
-                onClick = {
-                    coroutineScope.launch {
-                        bottomSheetState.show()
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet {
+                DrawerHeader(userData = userData)
+                DrawerBody(
+                    items = listOf(
+                        MenuItem(
+                            id = "Home",
+                            title = stringResource(id = R.string.home),
+                            contentDescription = "Home Button",
+                            icon = Icons.Default.Home
+                        ),
+                        MenuItem(
+                            id = "Logout",
+                            title = stringResource(id = R.string.logout),
+                            contentDescription = "Logout Button",
+                            icon = Icons.Default.ExitToApp
+                        )
+                    ),
+                    onItemClick = {
+                        when (it.id) {
+                            "Home" -> {
+                                coroutineScope.launch {
+                                    drawerState.close()
+                                }
+                            }
+
+                            "Logout" -> {
+                                onSignOut.invoke()
+                            }
+                        }
                     }
-                },
-            ) {
-                Icon(
-                    Icons.Default.Add,
-                    contentDescription = "HomeFAB",
-                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
         },
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                AppBar {
+                    coroutineScope.launch {
+                        drawerState.open()
+                    }
+                }
+            },
+            snackbarHost = {
+                SnackbarHost(hostState = snackBarHostState)
+            },
+            floatingActionButton = {
+                FloatingActionButton(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    onClick = {
+                        coroutineScope.launch {
+                            bottomSheetState.show()
+                        }
+                    },
+                ) {
+                    Icon(
+                        Icons.Default.Add,
+                        contentDescription = "HomeFAB",
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+            },
         ) {
-            Row(
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(24.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
+                    .fillMaxSize()
+                    .padding(it),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                LBTasksLogoIcon()
-
-                Text(
-                    text = stringResource(R.string.app_name),
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    fontSize = 36.sp
+                DefaultSearchBar(
+                    search = search,
+                    modifier = Modifier.padding(
+                        start = 16.dp,
+                        end = 16.dp,
+                        bottom = 16.dp
+                    ),
+                    onSearch = { task ->
+                        viewModel.onEvent(TaskEvent.SearchedForTask(task))
+                    },
                 )
-            }
 
-            DefaultSearchBar(
-                search = search,
-                modifier = Modifier.padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    bottom = 16.dp
-                ),
-                onSearch = { task ->
-                    viewModel.onEvent(TaskEvent.SearchedForTask(task))
-                },
-            )
-
-            LazyColumn {
-                items(state.tasks) { task ->
-                    TaskCard(
-                        task = task,
-                        onClickCard = {
-                            navController.navigate(
-                                MainScreens.TaskDetailsScreen.name + "/${task.toJson()}"
-                            )
-                        },
-                        onClickDelete = {
-                            viewModel.onEvent(TaskEvent.RequestDelete(task))
-
-                            scope.launch {
-                                val result = snackBarHostState.showSnackbar(
-                                    message = context.getString(R.string.task_deleted),
-                                    actionLabel = context.getString(R.string.undo)
+                LazyColumn {
+                    items(state.tasks) { task ->
+                        TaskCard(
+                            task = task,
+                            onClickCard = {
+                                navController.navigate(
+                                    MainScreens.TaskDetailsScreen.name + "/${task.toJson()}"
                                 )
-                                if (result == SnackbarResult.ActionPerformed) {
-                                    viewModel.onEvent(TaskEvent.RestoreTask)
+                            },
+                            onClickDelete = {
+                                viewModel.onEvent(TaskEvent.RequestDelete(task))
+
+                                coroutineScope.launch {
+                                    val result = snackBarHostState.showSnackbar(
+                                        message = context.getString(R.string.task_deleted),
+                                        actionLabel = context.getString(R.string.undo)
+                                    )
+                                    if (result == SnackbarResult.ActionPerformed) {
+                                        viewModel.onEvent(TaskEvent.RestoreTask)
+                                    }
                                 }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }

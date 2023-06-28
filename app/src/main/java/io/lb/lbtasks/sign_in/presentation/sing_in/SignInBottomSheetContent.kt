@@ -54,13 +54,6 @@ fun SignInBottomSheetContent(
     val repeatedPassword = remember {
         mutableStateOf("")
     }
-    val context = LocalContext.current
-
-    LaunchedEffect(key1 = state.signInError) {
-        state.signInError?.let { error ->
-            context.showToast(error)
-        }
-    }
 
     Surface(
         modifier = Modifier
@@ -83,40 +76,17 @@ fun SignInBottomSheetContent(
             )
 
             SignInTextFields(email, password, repeatedPassword)
-            SignInButtons(onSignInClick)
+
+            DefaultTextButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 72.dp, vertical = 16.dp),
+                text = stringResource(id = R.string.sign_in),
+                onClick = {
+
+                },
+            )
         }
-    }
-}
-
-@ExperimentalMaterial3Api
-@Composable
-private fun SignInButtons(onSignInClick: () -> Unit) {
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        DefaultTextButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 72.dp, vertical = 16.dp),
-            text = stringResource(id = R.string.sign_in),
-            onClick = {
-
-            },
-        )
-        DefaultTextButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 72.dp)
-                .shadow(2.dp, shape = RoundedCornerShape(36.dp)),
-            text = stringResource(id = R.string.sign_in_google),
-            icon = painterResource(id = R.drawable.ic_google),
-            containerColor = Color.White,
-            contentColor = Color.DarkGray,
-            onClick = {
-                onSignInClick.invoke()
-            },
-        )
     }
 }
 

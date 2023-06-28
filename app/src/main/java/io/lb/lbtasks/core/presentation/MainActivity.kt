@@ -1,7 +1,6 @@
 package io.lb.lbtasks.core.presentation
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -62,15 +61,15 @@ class MainActivity : ComponentActivity() {
                     val viewModel = viewModel<SignInViewModel>()
                     val state = viewModel.state.value
 
-                    LaunchedEffect(key1 = Unit) {
-                        googleAuthUiClient.getSignedInUser()?.let {
-                            navController.navigate(MainScreens.TaskScreen.name)
-                        }
+                    var startDestination = MainScreens.SignInScreen.name
+
+                    googleAuthUiClient.getSignedInUser()?.let {
+                        startDestination = MainScreens.TaskScreen.name
                     }
 
                     NavHost(
                         navController = navController,
-                        startDestination = MainScreens.SignInScreen.name
+                        startDestination = startDestination
                     ) {
                         composable(MainScreens.SignInScreen.name) {
                             val launcher = rememberLauncherForActivityResult(
@@ -123,7 +122,11 @@ class MainActivity : ComponentActivity() {
                                     lifecycleScope.launch {
                                         googleAuthUiClient.signOut()
                                         applicationContext.showToast(R.string.signed_out)
-                                        navController.navigate(MainScreens.SignInScreen.name)
+                                        navController.navigate(MainScreens.SignInScreen.name) {
+                                            popUpTo(MainScreens.TaskScreen.name) {
+                                                inclusive = true
+                                            }
+                                        }
                                     }
                                 }
                             )
