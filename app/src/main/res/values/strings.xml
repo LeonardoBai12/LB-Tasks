@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">LB Tasks</string>
-    <string name="choose_an_activity">Escolha uma atividade</string>
-    <string name="create_new_task">Criar nova tarefa</string>
+    <string name="choose_an_activity">Choose an activity type</string>
+    <string name="create_new_task">Create new task</string>
     <string name="home">Home</string>
     <string name="business">Business</string>
     <string name="study">Study</string>

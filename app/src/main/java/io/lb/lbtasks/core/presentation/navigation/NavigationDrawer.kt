@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -35,7 +36,7 @@ import io.lb.lbtasks.sign_in.domain.UserData
 @Composable
 fun DrawerHeader(userData: UserData?) {
     Box(
-        modifier = Modifier.background(MaterialTheme.colorScheme.onBackground)
+        modifier = Modifier.background(Color.Black)
     ) {
         Column(
             modifier = Modifier
@@ -53,7 +54,6 @@ fun DrawerHeader(userData: UserData?) {
                         .clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
-                Spacer(modifier = Modifier.height(16.dp))
             } ?: Box(
                 modifier = Modifier
                     .size(150.dp)
@@ -64,14 +64,17 @@ fun DrawerHeader(userData: UserData?) {
             ) {
                 userData?.userName?.let {
                     Text(
+                        modifier = Modifier.fillMaxSize(),
                         text = it.first().toString(),
                         textAlign = TextAlign.Center,
-                        fontSize = 72.sp,
+                        fontSize = 96.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             userData?.userName?.let {
                 Text(
@@ -79,7 +82,7 @@ fun DrawerHeader(userData: UserData?) {
                     textAlign = TextAlign.Center,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.background
+                    color = Color.White
                 )
             }
         }
