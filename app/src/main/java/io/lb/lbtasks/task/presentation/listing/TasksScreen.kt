@@ -41,7 +41,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
@@ -49,7 +48,6 @@ import io.lb.lbtasks.R
 import io.lb.lbtasks.core.presentation.navigation.DrawerBody
 import io.lb.lbtasks.core.presentation.navigation.DrawerHeader
 import io.lb.lbtasks.core.util.DefaultSearchBar
-import io.lb.lbtasks.core.util.showToast
 import io.lb.lbtasks.task.domain.model.Task
 import io.lb.lbtasks.core.presentation.navigation.MainScreens
 import io.lb.lbtasks.core.presentation.navigation.MenuItem
@@ -58,7 +56,6 @@ import io.lb.lbtasks.sign_in.domain.model.UserData
 import io.lb.lbtasks.task.presentation.widgets.NewTaskBottomSheetContent
 import io.lb.lbtasks.task.presentation.widgets.TaskCard
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @ExperimentalComposeUiApi
@@ -68,10 +65,12 @@ import kotlinx.coroutines.launch
 fun TasksScreen(
     navController: NavHostController,
     userData: UserData?,
+    state: TaskState,
     onSignOut: () -> Unit,
-    viewModel: TaskViewModel = hiltViewModel()
+    onRequestDelete: (Task) -> Unit,
+    onRestoreTask: () -> Unit,
+    onSearchTask: (String) -> Unit,
 ) {
-    val context = LocalContext.current
     val selectedTaskType = remember {
         mutableStateOf("")
     }
@@ -100,14 +99,6 @@ fun TasksScreen(
             if (bottomSheetState.isVisible)
                 bottomSheetState.hide()
         }
-
-        viewModel.eventFlow.collectLatest { event ->
-            when (event) {
-                is TaskViewModel.UiEvent.ShowToast -> {
-                    context.showToast(event.message)
-                }
-            }
-        }
     }
 
     ModalBottomSheetLayout(
@@ -132,8 +123,11 @@ fun TasksScreen(
             coroutineScope = coroutineScope,
             bottomSheetState = bottomSheetState,
             userData = userData,
+            state = state,
+            onRequestDelete = onRequestDelete,
+            onRestoreTask = onRestoreTask,
+            onSearchTask = onSearchTask,
             onSignOut = onSignOut,
-            viewModel = viewModel,
         )
     }
 }
@@ -147,12 +141,13 @@ private fun TasksScaffold(
     coroutineScope: CoroutineScope,
     bottomSheetState: ModalBottomSheetState,
     userData: UserData?,
+    state: TaskState,
+    onRequestDelete: (Task) -> Unit,
+    onRestoreTask: () -> Unit,
+    onSearchTask: (String) -> Unit,
     onSignOut: () -> Unit,
-    viewModel: TaskViewModel,
 ) {
     val context = LocalContext.current
-    val state = viewModel.state.value
-
     val search = remember {
         mutableStateOf("")
     }
@@ -242,8 +237,8 @@ private fun TasksScaffold(
                         end = 16.dp,
                         bottom = 16.dp
                     ),
-                    onSearch = { task ->
-                        viewModel.onEvent(TaskEvent.SearchedForTask(task))
+                    onSearch = { filter ->
+                        onSearchTask.invoke(filter)
                     },
                 )
 
@@ -257,7 +252,7 @@ private fun TasksScaffold(
                                 )
                             },
                             onClickDelete = {
-                                viewModel.onEvent(TaskEvent.RequestDelete(task))
+                                onRequestDelete.invoke(task)
 
                                 coroutineScope.launch {
                                     val result = snackBarHostState.showSnackbar(
@@ -265,7 +260,7 @@ private fun TasksScaffold(
                                         actionLabel = context.getString(R.string.undo)
                                     )
                                     if (result == SnackbarResult.ActionPerformed) {
-                                        viewModel.onEvent(TaskEvent.RestoreTask)
+                                        onRestoreTask.invoke()
                                     }
                                 }
                             }

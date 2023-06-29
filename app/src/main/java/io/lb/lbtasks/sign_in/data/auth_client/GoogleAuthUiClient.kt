@@ -10,7 +10,6 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import io.lb.lbtasks.R
-import io.lb.lbtasks.core.util.isValidEmail
 import io.lb.lbtasks.sign_in.domain.model.SignInResult
 import io.lb.lbtasks.sign_in.domain.model.UserData
 import kotlinx.coroutines.tasks.await
@@ -46,9 +45,6 @@ class GoogleAuthUiClient(
     }
 
     suspend fun loginWithEmailAndPassword(email: String, password: String): SignInResult {
-        if (email.isValidEmail().not())
-            throw Exception(context.getString(R.string.invalid_email))
-
         val result = try {
             auth.signInWithEmailAndPassword(
                 email,

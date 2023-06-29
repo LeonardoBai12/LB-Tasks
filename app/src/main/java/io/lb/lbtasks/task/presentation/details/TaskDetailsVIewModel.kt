@@ -2,12 +2,9 @@ package io.lb.lbtasks.task.presentation.details
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.lb.lbtasks.core.util.TASK
-import io.lb.lbtasks.task.domain.model.Task
 import io.lb.lbtasks.task.domain.use_cases.TaskUseCases
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -18,7 +15,6 @@ import javax.inject.Inject
 @HiltViewModel
 class TaskDetailsVIewModel @Inject constructor(
     private val useCases: TaskUseCases,
-    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _state = mutableStateOf(TaskDetailsState())
     val state: State<TaskDetailsState> = _state
@@ -29,14 +25,6 @@ class TaskDetailsVIewModel @Inject constructor(
     sealed class UiEvent {
         data class ShowToast(val message: String) : UiEvent()
         object Finish : UiEvent()
-    }
-
-    init {
-        val savedJson: String? = savedStateHandle[TASK]
-
-        savedJson?.let {
-            _state.value = _state.value.copy(task = Task.fromJson(it))
-        }
     }
 
     fun onEvent(event: TaskDetailsEvent) {

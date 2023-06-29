@@ -20,7 +20,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,26 +31,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import io.lb.lbtasks.R
 import io.lb.lbtasks.core.util.createDatePickerDialog
 import io.lb.lbtasks.core.util.createTimePickerDialog
 import io.lb.lbtasks.core.presentation.widgets.DefaultFilledTextField
 import io.lb.lbtasks.core.presentation.widgets.DefaultTextButton
-import io.lb.lbtasks.core.util.showToast
-import kotlinx.coroutines.flow.collectLatest
 
 @ExperimentalMaterial3Api
 @ExperimentalComposeUiApi
 @Composable
 fun TaskDetailsScreen(
     navController: NavHostController,
-    viewModel: TaskDetailsVIewModel = hiltViewModel(),
+    state: TaskDetailsState,
+    onRequestInsert: (String, String, String, String) -> Unit,
+    onRequestUpdate: (String, String, String, String) -> Unit,
 ) {
-    val context = LocalContext.current
-    val state = viewModel.state.value
-
     val title = remember {
         mutableStateOf(state.task?.title ?: "")
     }
@@ -61,24 +56,11 @@ fun TaskDetailsScreen(
     }
 
     val date = remember {
-        mutableStateOf(state.task?.deadlineDate ?: "")
+        mutableStateOf(state.task?.deadlineDate?.replace("-", "/") ?: "")
     }
 
     val time = remember {
         mutableStateOf(state.task?.deadlineTime ?: "")
-    }
-
-    LaunchedEffect(key1 = "TaskDetailsScreen") {
-        viewModel.eventFlow.collectLatest { event ->
-            when (event) {
-                is TaskDetailsVIewModel.UiEvent.Finish -> {
-                    navController.navigateUp()
-                }
-                is TaskDetailsVIewModel.UiEvent.ShowToast -> {
-                    context.showToast(event.message)
-                }
-            }
-        }
     }
 
     Scaffold(
@@ -130,21 +112,17 @@ fun TaskDetailsScreen(
                 text = stringResource(R.string.finish)
             ) {
                 state.task?.id?.let {
-                    viewModel.onEvent(
-                        TaskDetailsEvent.RequestUpdate(
-                            title = title.value,
-                            description = description.value,
-                            date = date.value,
-                            time = time.value,
-                        )
+                    onRequestUpdate.invoke(
+                        title.value,
+                        description.value,
+                        date.value,
+                        time.value
                     )
-                } ?: viewModel.onEvent(
-                    TaskDetailsEvent.RequestInsert(
-                        title = title.value,
-                        description = description.value,
-                        date = date.value,
-                        time = time.value,
-                    )
+                } ?: onRequestInsert.invoke(
+                    title.value,
+                    description.value,
+                    date.value,
+                    time.value
                 )
             }
         }

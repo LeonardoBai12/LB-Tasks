@@ -29,9 +29,15 @@ import io.lb.lbtasks.core.util.TASK
 import io.lb.lbtasks.core.util.showToast
 import io.lb.lbtasks.sign_in.presentation.SignInScreen
 import io.lb.lbtasks.sign_in.presentation.sing_in.SignInViewModel
+import io.lb.lbtasks.task.domain.model.Task
+import io.lb.lbtasks.task.presentation.details.TaskDetailsEvent
 import io.lb.lbtasks.task.presentation.details.TaskDetailsScreen
+import io.lb.lbtasks.task.presentation.details.TaskDetailsVIewModel
+import io.lb.lbtasks.task.presentation.listing.TaskEvent
+import io.lb.lbtasks.task.presentation.listing.TaskViewModel
 import io.lb.lbtasks.task.presentation.listing.TasksScreen
 import io.lb.lbtasks.ui.theme.LBTasksTheme
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @ExperimentalAnimationApi
@@ -50,8 +56,15 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
+
                     val signInViewModel = hiltViewModel<SignInViewModel>()
-                    val state = signInViewModel.state.value
+                    val signInState = signInViewModel.state.value
+
+                    val taskViewModel = hiltViewModel<TaskViewModel>()
+                    val taskState = taskViewModel.state.value
+
+                    val taskDetailsViewModel = hiltViewModel<TaskDetailsVIewModel>()
+                    val taskDetailsState = taskDetailsViewModel.state.value
 
                     var startDestination = MainScreens.SignInScreen.name
 
@@ -73,8 +86,8 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
 
-                            LaunchedEffect(key1 = state.isSignInSuccessful) {
-                                if (state.isSignInSuccessful) {
+                            LaunchedEffect(key1 = signInState.isSignInSuccessful) {
+                                if (signInState.isSignInSuccessful) {
                                     applicationContext.showToast(R.string.sign_in_successful)
 
                                     navController.navigate(MainScreens.TaskScreen.name)
@@ -83,7 +96,7 @@ class MainActivity : ComponentActivity() {
                             }
 
                             SignInScreen(
-                                state = state,
+                                state = signInState,
                                 onSignInClick = {
                                     lifecycleScope.launch {
                                         signInViewModel.signIn()?.let {
@@ -101,9 +114,20 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(MainScreens.TaskScreen.name) {
+                            LaunchedEffect(key1 = "launchedEffectKey") {
+                                taskViewModel.eventFlow.collectLatest { event ->
+                                    when (event) {
+                                        is TaskViewModel.UiEvent.ShowToast -> {
+                                            applicationContext.showToast(event.message)
+                                        }
+                                    }
+                                }
+                            }
+
                             TasksScreen(
                                 navController = navController,
                                 userData = signInViewModel.getSignedInUser(),
+                                state = taskState,
                                 onSignOut = {
                                     lifecycleScope.launch {
                                         signInViewModel.logout()
@@ -114,6 +138,15 @@ class MainActivity : ComponentActivity() {
                                             }
                                         }
                                     }
+                                },
+                                onRequestDelete = { task ->
+                                    taskViewModel.onEvent(TaskEvent.RequestDelete(task))
+                                },
+                                onRestoreTask = {
+                                    taskViewModel.onEvent(TaskEvent.RestoreTask)
+                                },
+                                onSearchTask = { filter ->
+                                    taskViewModel.onEvent(TaskEvent.SearchedForTask(filter))
                                 }
                             )
                         }
@@ -126,8 +159,46 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         ) { backStackEntry ->
+                            LaunchedEffect(key1 = MainScreens.TaskDetailsScreen.name) {
+                                taskDetailsViewModel.eventFlow.collectLatest { event ->
+                                    when (event) {
+                                        is TaskDetailsVIewModel.UiEvent.Finish -> {
+                                            navController.navigateUp()
+                                        }
+                                        is TaskDetailsVIewModel.UiEvent.ShowToast -> {
+                                            applicationContext.showToast(event.message)
+                                        }
+                                    }
+                                }
+                            }
+
                             backStackEntry.arguments?.getString(TASK)?.let {
-                                TaskDetailsScreen(navController = navController)
+                                taskDetailsState.task = Task.fromJson(it)
+
+                                TaskDetailsScreen(
+                                    navController = navController,
+                                    state = taskDetailsState,
+                                    onRequestInsert = { title, description, date, time ->
+                                        taskDetailsViewModel.onEvent(
+                                            TaskDetailsEvent.RequestInsert(
+                                                title = title,
+                                                description = description,
+                                                date = date,
+                                                time = time,
+                                            )
+                                        )
+                                    },
+                                    onRequestUpdate = { title, description, date, time ->
+                                        taskDetailsViewModel.onEvent(
+                                            TaskDetailsEvent.RequestUpdate(
+                                                title = title,
+                                                description = description,
+                                                date = date,
+                                                time = time,
+                                            )
+                                        )
+                                    }
+                                )
                             }
                         }
                     }
