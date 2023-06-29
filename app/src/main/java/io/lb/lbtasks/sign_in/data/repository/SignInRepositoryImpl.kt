@@ -8,7 +8,7 @@ import io.lb.lbtasks.sign_in.domain.repository.SignInRepository
 
 class SignInRepositoryImpl(
     private val googleAuthUiClient: GoogleAuthUiClient
-): SignInRepository {
+) : SignInRepository {
     override fun getSignedInUser() = googleAuthUiClient.getSignedInUser()
 
     override suspend fun signInWithEmailAndPassword(email: String, password: String): SignInResult {

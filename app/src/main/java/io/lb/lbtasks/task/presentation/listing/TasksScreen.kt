@@ -47,12 +47,12 @@ import androidx.navigation.NavHostController
 import io.lb.lbtasks.R
 import io.lb.lbtasks.core.presentation.navigation.DrawerBody
 import io.lb.lbtasks.core.presentation.navigation.DrawerHeader
-import io.lb.lbtasks.core.util.DefaultSearchBar
-import io.lb.lbtasks.task.domain.model.Task
 import io.lb.lbtasks.core.presentation.navigation.MainScreens
 import io.lb.lbtasks.core.presentation.navigation.MenuItem
 import io.lb.lbtasks.core.presentation.widgets.AppBar
+import io.lb.lbtasks.core.util.DefaultSearchBar
 import io.lb.lbtasks.sign_in.domain.model.UserData
+import io.lb.lbtasks.task.domain.model.Task
 import io.lb.lbtasks.task.presentation.widgets.NewTaskBottomSheetContent
 import io.lb.lbtasks.task.presentation.widgets.TaskCard
 import kotlinx.coroutines.CoroutineScope

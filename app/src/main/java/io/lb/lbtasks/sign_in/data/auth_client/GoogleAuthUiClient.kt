@@ -18,7 +18,7 @@ import java.util.concurrent.CancellationException
 
 class GoogleAuthUiClient(
     private val context: Context,
-    private  val oneTapClient: SignInClient
+    private val oneTapClient: SignInClient
 ) {
     private val auth = Firebase.auth
 
@@ -68,7 +68,7 @@ class GoogleAuthUiClient(
         )
     }
 
-    suspend fun  signIn(): IntentSender? {
+    suspend fun signIn(): IntentSender? {
         val result = try {
             oneTapClient.beginSignIn(
                 buildSignInRequest()
@@ -126,7 +126,7 @@ class GoogleAuthUiClient(
     }
 
     private fun buildSignInRequest(): BeginSignInRequest {
-        return  BeginSignInRequest.Builder()
+        return BeginSignInRequest.Builder()
             .setGoogleIdTokenRequestOptions(
                 GoogleIdTokenRequestOptions.builder()
                     .setSupported(true)

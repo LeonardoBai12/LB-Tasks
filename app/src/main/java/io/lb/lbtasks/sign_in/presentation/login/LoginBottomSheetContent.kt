@@ -22,19 +22,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import io.lb.lbtasks.R
 import io.lb.lbtasks.core.presentation.widgets.DefaultTextButton
 import io.lb.lbtasks.core.presentation.widgets.DefaultTextField
-import io.lb.lbtasks.sign_in.presentation.sing_in.SignInState
 
 @ExperimentalComposeUiApi
 @ExperimentalMaterial3Api

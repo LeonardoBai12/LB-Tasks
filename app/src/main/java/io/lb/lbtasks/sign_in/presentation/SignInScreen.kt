@@ -34,10 +34,10 @@ import io.lb.lbtasks.R
 import io.lb.lbtasks.core.presentation.widgets.DefaultTextButton
 import io.lb.lbtasks.core.util.showToast
 import io.lb.lbtasks.sign_in.presentation.login.LoginBottomSheetContent
+import io.lb.lbtasks.sign_in.presentation.sing_in.SignInBottomSheetContent
 import io.lb.lbtasks.sign_in.presentation.sing_in.SignInState
 import io.lb.lbtasks.sign_in.presentation.widgets.HomeLoginBackground
 import io.lb.lbtasks.sign_in.presentation.widgets.HomeLoginHeader
-import io.lb.lbtasks.sign_in.presentation.sing_in.SignInBottomSheetContent
 import kotlinx.coroutines.launch
 
 @ExperimentalAnimationApi

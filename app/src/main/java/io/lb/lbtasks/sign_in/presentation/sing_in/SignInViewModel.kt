@@ -18,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val useCases: SignInUseCases
-): ViewModel() {
+) : ViewModel() {
     private val _state = mutableStateOf(SignInState())
     val state: State<SignInState> = _state
 

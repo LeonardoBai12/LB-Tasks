@@ -16,7 +16,6 @@ import io.lb.lbtasks.sign_in.domain.use_cases.SignInUseCase
 import io.lb.lbtasks.sign_in.domain.use_cases.SignInUseCases
 import io.lb.lbtasks.sign_in.domain.use_cases.SignInWithEmailAndPasswordUseCase
 import io.lb.lbtasks.sign_in.domain.use_cases.SignInWithGoogleUseCase
-import javax.inject.Singleton
 
 @Module
 @InstallIn(ViewModelComponent::class)
