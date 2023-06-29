@@ -1,4 +1,4 @@
-package io.lb.lbtasks.sign_in.presentation.widgets
+package io.lb.lbtasks.sign_in.presentation.sing_in
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,17 +16,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -35,15 +30,12 @@ import androidx.compose.ui.unit.sp
 import io.lb.lbtasks.R
 import io.lb.lbtasks.core.presentation.widgets.DefaultTextButton
 import io.lb.lbtasks.core.presentation.widgets.DefaultTextField
-import io.lb.lbtasks.core.util.showToast
-import io.lb.lbtasks.sign_in.presentation.sing_in.SignInState
 
 @ExperimentalMaterial3Api
 @ExperimentalComposeUiApi
 @Composable
 fun SignInBottomSheetContent(
-    state: SignInState,
-    onSignInClick: () -> Unit
+    onSignInWithEmailAndPassword: (String, String, String) -> Unit,
 ) {
     val email = remember {
         mutableStateOf("")
@@ -83,7 +75,11 @@ fun SignInBottomSheetContent(
                     .padding(horizontal = 72.dp, vertical = 16.dp),
                 text = stringResource(id = R.string.sign_in),
                 onClick = {
-
+                    onSignInWithEmailAndPassword(
+                        email.value,
+                        password.value,
+                        repeatedPassword.value,
+                    )
                 },
             )
         }
@@ -119,6 +115,7 @@ private fun SignInTextFields(
         DefaultTextField(
             modifier = Modifier.padding(8.dp),
             text = password.value,
+            isPassword = true,
             icon = {
                 Icon(
                     Icons.Default.Lock,
@@ -134,7 +131,8 @@ private fun SignInTextFields(
 
         DefaultTextField(
             modifier = Modifier.padding(8.dp),
-            text = password.value,
+            text = repeatedPassword.value,
+            isPassword = true,
             icon = {
                 Icon(
                     Icons.Default.Lock,

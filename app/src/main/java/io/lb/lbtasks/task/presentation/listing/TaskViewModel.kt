@@ -10,8 +10,6 @@ import io.lb.lbtasks.task.domain.model.Task
 import io.lb.lbtasks.task.domain.use_cases.TaskUseCases
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -24,18 +22,11 @@ class TaskViewModel @Inject constructor(
     private val _state = mutableStateOf(TaskState())
     val state: State<TaskState> = _state
 
-    private val _eventFlow = MutableSharedFlow<UiEvent>()
-    val eventFlow = _eventFlow.asSharedFlow()
-
     private val tasks = mutableListOf<Task>()
     private var searchJob: Job? = null
     private var getTasksJob: Job? = null
 
     private var recentlyDeletedTask: Task? = null
-
-    sealed class UiEvent {
-        data class ShowToast(val message: String) : UiEvent()
-    }
 
     init {
         getTasks()

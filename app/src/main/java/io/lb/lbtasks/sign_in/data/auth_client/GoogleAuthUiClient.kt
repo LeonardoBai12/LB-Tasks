@@ -38,7 +38,8 @@ class GoogleAuthUiClient(
                 UserData(
                     userId = uid,
                     userName = displayName,
-                    profilePictureUrl = photoUrl?.toString()
+                    profilePictureUrl = photoUrl?.toString(),
+                    email = email
                 )
             },
         )
@@ -60,7 +61,8 @@ class GoogleAuthUiClient(
                 UserData(
                     userId = uid,
                     userName = displayName,
-                    profilePictureUrl = photoUrl?.toString()
+                    profilePictureUrl = photoUrl?.toString(),
+                    email = email
                 )
             },
         )
@@ -89,7 +91,8 @@ class GoogleAuthUiClient(
                     UserData(
                         userId = uid,
                         userName = displayName,
-                        profilePictureUrl = photoUrl?.toString()
+                        profilePictureUrl = photoUrl?.toString(),
+                        email = email
                     )
                 },
             )
@@ -107,7 +110,8 @@ class GoogleAuthUiClient(
         UserData(
             userId = uid,
             userName = displayName,
-            profilePictureUrl = photoUrl?.toString()
+            profilePictureUrl = photoUrl?.toString(),
+            email = email
         )
     }
 

@@ -23,13 +23,4 @@ object AppModule {
             "lbtasks.db"
         ).build()
     }
-
-    @Provides
-    @Singleton
-    fun providesGoogleAuthUiClient(app: Application): GoogleAuthUiClient {
-        return GoogleAuthUiClient(
-            context = app.applicationContext,
-            oneTapClient = Identity.getSignInClient(app.applicationContext)
-        )
-    }
 }

@@ -28,6 +28,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -62,12 +63,12 @@ fun DrawerHeader(userData: UserData?) {
                         shape = CircleShape
                     )
             ) {
-                userData?.userName?.let {
+                userData?.email?.let {
                     Text(
                         modifier = Modifier.fillMaxSize(),
-                        text = it.first().toString(),
+                        text = it.first().toString().uppercase(),
                         textAlign = TextAlign.Center,
-                        fontSize = 96.sp,
+                        fontSize = 100.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
@@ -76,15 +77,15 @@ fun DrawerHeader(userData: UserData?) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            userData?.userName?.let {
-                Text(
-                    text = it,
-                    textAlign = TextAlign.Center,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White
-                )
-            }
+            Text(
+                text = userData?.userName?.takeIf { it.isNotBlank() } ?: userData?.email ?: "",
+                textAlign = TextAlign.Center,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.White,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }

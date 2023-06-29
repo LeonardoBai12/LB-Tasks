@@ -95,9 +95,19 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
 
+                            LaunchedEffect(key1 = "launchedEffectKey") {
+                                signInViewModel.eventFlow.collectLatest { event ->
+                                    when (event) {
+                                        is SignInViewModel.UiEvent.ShowToast -> {
+                                            applicationContext.showToast(event.message)
+                                        }
+                                    }
+                                }
+                            }
+
                             SignInScreen(
                                 state = signInState,
-                                onSignInClick = {
+                                onSignInWithGoogleClick = {
                                     lifecycleScope.launch {
                                         signInViewModel.signIn()?.let {
                                             launcher.launch(
@@ -109,21 +119,24 @@ class MainActivity : ComponentActivity() {
                                             R.string.something_went_wrong
                                         )
                                     }
+                                },
+                                onSignInClick = { email, password, repeatedPassword ->
+                                    signInViewModel.signInWithEmailAndPassword(
+                                        email = email,
+                                        password = password,
+                                        repeatedPassword = repeatedPassword
+                                    )
+                                },
+                                onLoginClick = { email, password ->
+                                    signInViewModel.loginWithEmailAndPassword(
+                                        email = email,
+                                        password = password,
+                                    )
                                 }
                             )
                         }
 
                         composable(MainScreens.TaskScreen.name) {
-                            LaunchedEffect(key1 = "launchedEffectKey") {
-                                taskViewModel.eventFlow.collectLatest { event ->
-                                    when (event) {
-                                        is TaskViewModel.UiEvent.ShowToast -> {
-                                            applicationContext.showToast(event.message)
-                                        }
-                                    }
-                                }
-                            }
-
                             TasksScreen(
                                 navController = navController,
                                 userData = signInViewModel.getSignedInUser(),

@@ -1,5 +1,7 @@
 package io.lb.lbtasks.sign_in.di
 
+import android.app.Application
+import com.google.android.gms.auth.api.identity.Identity
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,6 +16,7 @@ import io.lb.lbtasks.sign_in.domain.use_cases.SignInUseCase
 import io.lb.lbtasks.sign_in.domain.use_cases.SignInUseCases
 import io.lb.lbtasks.sign_in.domain.use_cases.SignInWithEmailAndPasswordUseCase
 import io.lb.lbtasks.sign_in.domain.use_cases.SignInWithGoogleUseCase
+import javax.inject.Singleton
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -32,6 +35,14 @@ object SignInModule {
             signInUseCase = SignInUseCase(repository),
             getSignedInUserUseCase = GetSignedInUserUseCase(repository),
             logoutUseCase = LogoutUseCase(repository)
+        )
+    }
+
+    @Provides
+    fun providesGoogleAuthUiClient(app: Application): GoogleAuthUiClient {
+        return GoogleAuthUiClient(
+            context = app.applicationContext,
+            oneTapClient = Identity.getSignInClient(app.applicationContext)
         )
     }
 }

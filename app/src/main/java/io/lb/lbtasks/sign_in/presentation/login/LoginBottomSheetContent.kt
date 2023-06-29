@@ -40,8 +40,7 @@ import io.lb.lbtasks.sign_in.presentation.sing_in.SignInState
 @ExperimentalMaterial3Api
 @Composable
 fun LoginBottomSheetContent(
-    state: SignInState,
-    onSignInClick: () -> Unit
+    onLoginWithEmailAndPassword: (String, String) -> Unit,
 ) {
     val email = remember {
         mutableStateOf("")
@@ -78,7 +77,7 @@ fun LoginBottomSheetContent(
                     .padding(horizontal = 72.dp, vertical = 16.dp),
                 text = stringResource(id = R.string.login),
                 onClick = {
-
+                    onLoginWithEmailAndPassword.invoke(email.value, password.value)
                 },
             )
         }
@@ -113,6 +112,7 @@ private fun SignInTextFields(
         DefaultTextField(
             modifier = Modifier.padding(8.dp),
             text = password.value,
+            isPassword = true,
             icon = {
                 Icon(
                     Icons.Default.Lock,

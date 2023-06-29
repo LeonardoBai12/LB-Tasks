@@ -37,7 +37,7 @@ import io.lb.lbtasks.sign_in.presentation.login.LoginBottomSheetContent
 import io.lb.lbtasks.sign_in.presentation.sing_in.SignInState
 import io.lb.lbtasks.sign_in.presentation.widgets.HomeLoginBackground
 import io.lb.lbtasks.sign_in.presentation.widgets.HomeLoginHeader
-import io.lb.lbtasks.sign_in.presentation.widgets.SignInBottomSheetContent
+import io.lb.lbtasks.sign_in.presentation.sing_in.SignInBottomSheetContent
 import kotlinx.coroutines.launch
 
 @ExperimentalAnimationApi
@@ -47,7 +47,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun SignInScreen(
     state: SignInState,
-    onSignInClick: () -> Unit
+    onSignInWithGoogleClick: () -> Unit,
+    onSignInClick: (String, String, String) -> Unit,
+    onLoginClick: (String, String) -> Unit,
 ) {
     val bottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
@@ -80,8 +82,8 @@ fun SignInScreen(
         sheetBackgroundColor = MaterialTheme.colorScheme.surface,
         sheetContentColor = MaterialTheme.colorScheme.onSurface,
         sheetContent = {
-            if (isLogin.value) LoginBottomSheetContent(state, onSignInClick)
-            else SignInBottomSheetContent(state, onSignInClick)
+            if (isLogin.value) LoginBottomSheetContent(onLoginClick)
+            else SignInBottomSheetContent(onSignInClick)
         },
     ) {
         Column(
@@ -90,7 +92,7 @@ fun SignInScreen(
             horizontalAlignment = Alignment.Start
         ) {
             HomeLoginHeader()
-            LoginButtonsColumn(onSignInClick, bottomSheetState, isLogin)
+            LoginButtonsColumn(bottomSheetState, isLogin, onSignInWithGoogleClick)
         }
     }
 }
@@ -98,9 +100,9 @@ fun SignInScreen(
 @ExperimentalMaterialApi
 @Composable
 private fun LoginButtonsColumn(
-    onSignInClick: () -> Unit,
     bottomSheetState: ModalBottomSheetState,
-    isLogin: MutableState<Boolean>
+    isLogin: MutableState<Boolean>,
+    onSignInWithGoogleClick: () -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -145,7 +147,7 @@ private fun LoginButtonsColumn(
             containerColor = Color.White,
             contentColor = Color.DarkGray,
             onClick = {
-                onSignInClick.invoke()
+                onSignInWithGoogleClick.invoke()
             },
         )
     }
