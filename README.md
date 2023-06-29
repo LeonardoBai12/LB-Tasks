@@ -12,16 +12,17 @@ LB Tasks offers the following features:
 
 The application is built using the following technologies:
 
-* [Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) for asynchronous programming
-* [ViewModel](https://developer.android.com/reference/androidx/lifecycle/ViewModel) for managing UI-related data
-* [Room DB](https://developer.android.com/training/data-storage) for local data storage
-* [Jetpack Compose](https://developer.android.com/jetpack/compose/documentation) for building the UI
-* [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) for dependency injection
-* [JUnit 5](https://junit.org/junit5/docs/current/user-guide) for unit testing (Not yet implemented)
-* [MockK](https://mockk.io) for mocking objects in unit tests (Not yet implemented)
-* [Espresso](https://developer.android.com/training/testing/espresso) for UI testing (Not yet implemented)
-* [Github Actions](https://docs.github.com/pt/actions/learn-github-actions) for Continuous Integration/Continuous Deployment (CI/CD)
-* [JaCoCo](https://www.jacoco.org) for generating test coverage reports
+* [Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) for asynchronous programming.
+* [ViewModel](https://developer.android.com/reference/androidx/lifecycle/ViewModel) for managing UI-related data.
+* [Room DB](https://developer.android.com/training/data-storage) for local data storage.
+* [Jetpack Compose](https://developer.android.com/jetpack/compose/documentation) for building the UI.
+* [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) for dependency injection.
+* [Firebase Realtime Database](https://firebase.google.com/docs/database?hl=pt-br) for Cloud storage.
+* [Firebase Authentication](https://firebase.google.com/docs/auth?hl=pt-br) for user authentication.
+* [JUnit 5](https://junit.org/junit5/docs/current/user-guide) for unit testing (Not yet implemented).
+* [MockK](https://mockk.io) for mocking objects in unit tests (Not yet implemented).
+* [Espresso](https://developer.android.com/training/testing/espresso) for UI testing (Not yet implemented).
+* [Github Actions](https://docs.github.com/pt/actions/learn-github-actions) for Continuous Integration/Continuous Deployment (CI/CD).
 
 ## Getting Started
 
