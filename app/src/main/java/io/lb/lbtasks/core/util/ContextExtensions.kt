@@ -57,3 +57,7 @@ fun Context.createDatePickerDialog(
 fun Context.showToast(message: String) {
     Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 }
+
+fun Context.showToast(id: Int) {
+    Toast.makeText(this, id, Toast.LENGTH_LONG).show()
+}
