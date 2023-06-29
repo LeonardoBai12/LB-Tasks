@@ -1,4 +1,4 @@
-package io.lb.lbtasks.sign_in.presentation.sing_in
+package io.lb.lbtasks.sign_in.data.auth_client
 
 import android.content.Context
 import android.content.Intent
@@ -10,8 +10,9 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import io.lb.lbtasks.R
-import io.lb.lbtasks.sign_in.domain.SignInResult
-import io.lb.lbtasks.sign_in.domain.UserData
+import io.lb.lbtasks.core.util.isValidEmail
+import io.lb.lbtasks.sign_in.domain.model.SignInResult
+import io.lb.lbtasks.sign_in.domain.model.UserData
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
 import java.util.concurrent.CancellationException
@@ -22,6 +23,53 @@ class GoogleAuthUiClient(
 ) {
     private val auth = Firebase.auth
 
+    suspend fun signInWithEmailAndPassword(email: String, password: String): SignInResult {
+        val result = try {
+            auth.createUserWithEmailAndPassword(
+                email,
+                password
+            ).await()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw e
+        }
+
+        return SignInResult(
+            data = result?.user?.run {
+                UserData(
+                    userId = uid,
+                    userName = displayName,
+                    profilePictureUrl = photoUrl?.toString()
+                )
+            },
+        )
+    }
+
+    suspend fun loginWithEmailAndPassword(email: String, password: String): SignInResult {
+        if (email.isValidEmail().not())
+            throw Exception(context.getString(R.string.invalid_email))
+
+        val result = try {
+            auth.signInWithEmailAndPassword(
+                email,
+                password
+            ).await()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw e
+        }
+
+        return SignInResult(
+            data = result?.user?.run {
+                UserData(
+                    userId = uid,
+                    userName = displayName,
+                    profilePictureUrl = photoUrl?.toString()
+                )
+            },
+        )
+    }
+
     suspend fun  signIn(): IntentSender? {
         val result = try {
             oneTapClient.beginSignIn(
@@ -29,8 +77,7 @@ class GoogleAuthUiClient(
             ).await()
         } catch (e: Exception) {
             e.printStackTrace()
-            if (e is CancellationException) throw e
-            null
+            throw e
         }
         return result?.pendingIntent?.intentSender
     }
@@ -68,7 +115,7 @@ class GoogleAuthUiClient(
         )
     }
 
-    suspend fun signOut() {
+    suspend fun logout() {
         try {
             oneTapClient.signOut().await()
             auth.signOut()

@@ -5,7 +5,7 @@ import io.lb.lbtasks.task.domain.model.Task
 import io.lb.lbtasks.task.domain.repository.TaskRepository
 
 class TaskRepositoryImpl(
-    private val dao: TaskDao
+    private val dao: TaskDao,
 ) : TaskRepository {
     override suspend fun deleteTask(task: Task) {
         dao.deleteTask(task)

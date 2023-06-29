@@ -5,12 +5,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import io.lb.lbtasks.core.data.local.AppDatabase
+import io.lb.lbtasks.sign_in.data.auth_client.GoogleAuthUiClient
 import io.lb.lbtasks.task.data.local.TaskDao
 import io.lb.lbtasks.task.data.repository.TaskRepositoryImpl
 import io.lb.lbtasks.task.domain.repository.TaskRepository
 import io.lb.lbtasks.task.domain.use_cases.DeleteTaskUseCase
 import io.lb.lbtasks.task.domain.use_cases.GetTasksUseCase
 import io.lb.lbtasks.task.domain.use_cases.InsertTaskUseCase
+import io.lb.lbtasks.sign_in.domain.use_cases.LogoutUseCase
 import io.lb.lbtasks.task.domain.use_cases.TaskUseCases
 import io.lb.lbtasks.task.domain.use_cases.UpdateTaskUseCase
 
@@ -21,7 +23,9 @@ object TaskModule {
     fun providesTaskDao(appDatabase: AppDatabase) = appDatabase.taskDao
 
     @Provides
-    fun providesTaskRepository(dao: TaskDao): TaskRepository {
+    fun providesTaskRepository(
+        dao: TaskDao,
+    ): TaskRepository {
         return TaskRepositoryImpl(dao)
     }
 

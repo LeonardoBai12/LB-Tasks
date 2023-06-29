@@ -15,21 +15,19 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.google.android.gms.auth.api.identity.Identity
 import dagger.hilt.android.AndroidEntryPoint
 import io.lb.lbtasks.R
 import io.lb.lbtasks.core.presentation.navigation.MainScreens
 import io.lb.lbtasks.core.util.TASK
 import io.lb.lbtasks.core.util.showToast
 import io.lb.lbtasks.sign_in.presentation.SignInScreen
-import io.lb.lbtasks.sign_in.presentation.sing_in.GoogleAuthUiClient
 import io.lb.lbtasks.sign_in.presentation.sing_in.SignInViewModel
 import io.lb.lbtasks.task.presentation.details.TaskDetailsScreen
 import io.lb.lbtasks.task.presentation.listing.TasksScreen
@@ -41,12 +39,6 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterial3Api
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val googleAuthUiClient by lazy {
-        GoogleAuthUiClient(
-            context = applicationContext,
-            oneTapClient = Identity.getSignInClient(applicationContext)
-        )
-    }
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,12 +50,12 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    val viewModel = viewModel<SignInViewModel>()
-                    val state = viewModel.state.value
+                    val signInViewModel = hiltViewModel<SignInViewModel>()
+                    val state = signInViewModel.state.value
 
                     var startDestination = MainScreens.SignInScreen.name
 
-                    googleAuthUiClient.getSignedInUser()?.let {
+                    signInViewModel.getSignedInUser()?.let {
                         startDestination = MainScreens.TaskScreen.name
                     }
 
@@ -76,13 +68,7 @@ class MainActivity : ComponentActivity() {
                                 contract = ActivityResultContracts.StartIntentSenderForResult(),
                                 onResult = { result ->
                                     if (result.resultCode == RESULT_OK) {
-                                        lifecycleScope.launch {
-                                            val signInResult =
-                                                googleAuthUiClient.getSignInResultFromIntent(
-                                                    intent = result.data ?: return@launch
-                                                )
-                                            viewModel.onSignInResult(signInResult)
-                                        }
+                                        signInViewModel.signInWithGoogle(result.data)
                                     }
                                 }
                             )
@@ -92,7 +78,7 @@ class MainActivity : ComponentActivity() {
                                     applicationContext.showToast(R.string.sign_in_successful)
 
                                     navController.navigate(MainScreens.TaskScreen.name)
-                                    viewModel.resetState()
+                                    signInViewModel.resetState()
                                 }
                             }
 
@@ -100,7 +86,7 @@ class MainActivity : ComponentActivity() {
                                 state = state,
                                 onSignInClick = {
                                     lifecycleScope.launch {
-                                        googleAuthUiClient.signIn()?.let {
+                                        signInViewModel.signIn()?.let {
                                             launcher.launch(
                                                 IntentSenderRequest.Builder(
                                                     it
@@ -117,10 +103,10 @@ class MainActivity : ComponentActivity() {
                         composable(MainScreens.TaskScreen.name) {
                             TasksScreen(
                                 navController = navController,
-                                userData = googleAuthUiClient.getSignedInUser(),
+                                userData = signInViewModel.getSignedInUser(),
                                 onSignOut = {
                                     lifecycleScope.launch {
-                                        googleAuthUiClient.signOut()
+                                        signInViewModel.logout()
                                         applicationContext.showToast(R.string.signed_out)
                                         navController.navigate(MainScreens.SignInScreen.name) {
                                             popUpTo(MainScreens.TaskScreen.name) {

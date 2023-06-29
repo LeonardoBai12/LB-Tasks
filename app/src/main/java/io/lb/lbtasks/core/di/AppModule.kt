@@ -2,11 +2,13 @@ package io.lb.lbtasks.core.di
 
 import android.app.Application
 import androidx.room.Room
+import com.google.android.gms.auth.api.identity.Identity
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.lb.lbtasks.core.data.local.AppDatabase
+import io.lb.lbtasks.sign_in.data.auth_client.GoogleAuthUiClient
 import javax.inject.Singleton
 
 @Module
@@ -20,5 +22,14 @@ object AppModule {
             AppDatabase::class.java,
             "lbtasks.db"
         ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun providesGoogleAuthUiClient(app: Application): GoogleAuthUiClient {
+        return GoogleAuthUiClient(
+            context = app.applicationContext,
+            oneTapClient = Identity.getSignInClient(app.applicationContext)
+        )
     }
 }
