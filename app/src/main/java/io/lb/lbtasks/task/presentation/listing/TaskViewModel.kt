@@ -5,7 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.lb.lbtasks.core.util.Resource
 import io.lb.lbtasks.core.util.filterBy
+import io.lb.lbtasks.sign_in.domain.model.UserData
 import io.lb.lbtasks.task.domain.model.Task
 import io.lb.lbtasks.task.domain.use_cases.TaskUseCases
 import kotlinx.coroutines.Job
@@ -27,10 +29,7 @@ class TaskViewModel @Inject constructor(
     private var getTasksJob: Job? = null
 
     private var recentlyDeletedTask: Task? = null
-
-    init {
-        getTasks()
-    }
+    var userData: UserData? = null
 
     fun onEvent(event: TaskEvent) {
         when (event) {
@@ -55,40 +54,62 @@ class TaskViewModel @Inject constructor(
             }
             is TaskEvent.RestoreTask -> {
                 recentlyDeletedTask?.let {
-                    insertTask(it)
+                    restoreTask(it)
                 }
             }
         }
     }
 
-    private fun getTasks() {
+    fun getTasks(userData: UserData) {
         getTasksJob?.cancel()
-        getTasksJob = useCases.getTasksUseCase().onEach { result ->
-            tasks.addAll(result)
+        getTasksJob = useCases.getTasksUseCase(userData).onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    result.data?.let {
+                        tasks.addAll(it)
 
-            _state.value = state.value.copy(
-                tasks = result,
-            )
+                        _state.value = state.value.copy(
+                            tasks = it,
+                        )
+                    }
+                }
+                is Resource.Loading -> {
+                    _state.value = state.value.copy(
+                        loading = result.isLoading,
+                    )
+                }
+            }
         }.launchIn(viewModelScope)
     }
 
-    private fun insertTask(task: Task) {
+    private fun restoreTask(task: Task) {
         viewModelScope.launch {
             with(task) {
-                useCases.insertTaskUseCase(
-                    title = title,
-                    description = description ?: "",
-                    taskType = taskType,
-                    deadlineDate = deadlineDate ?: "",
-                    deadlineTime = deadlineTime ?: ""
-                )
+                userData?.let {
+                    useCases.insertTaskUseCase(
+                        userData = it,
+                        title = title,
+                        description = description ?: "",
+                        taskType = taskType,
+                        deadlineDate = deadlineDate ?: "",
+                        deadlineTime = deadlineTime ?: ""
+                    )
+                    getTasks(it)
+                }
             }
         }
     }
 
     private fun deleteTask(task: Task) {
         viewModelScope.launch {
-            useCases.deleteTaskUseCase(task)
+            userData?.let {
+                useCases.deleteTaskUseCase(it, task)
+                getTasks(it)
+            }
         }
+    }
+
+    fun clear() {
+        _state.value = TaskState()
     }
 }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -19,6 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -31,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.lb.lbtasks.core.presentation.widgets.DefaultIcon
 import io.lb.lbtasks.core.presentation.widgets.SwipeableCard
+import io.lb.lbtasks.core.util.shimmerAnimation
 import io.lb.lbtasks.task.domain.model.Task
 import io.lb.lbtasks.task.domain.model.TaskType
 
@@ -133,6 +136,45 @@ private fun TaskCardContent(task: Task) {
                     .padding(bottom = 12.dp),
                 fontSize = 16.sp,
             )
+        }
+    }
+}
+
+@Composable
+fun TaskShimmerCard() {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp),
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(
+                modifier = Modifier
+                    .size(48.dp)
+                    .shimmerAnimation(),
+            )
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Column(
+                horizontalAlignment = Alignment.Start
+            ) {
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth(0.85F)
+                        .height(18.dp)
+                        .padding(bottom = 8.dp)
+                        .shimmerAnimation()
+                )
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth(0.85F)
+                        .height(18.dp)
+                        .shimmerAnimation()
+                )
+            }
         }
     }
 }

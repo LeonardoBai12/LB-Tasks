@@ -55,6 +55,7 @@ import io.lb.lbtasks.sign_in.domain.model.UserData
 import io.lb.lbtasks.task.domain.model.Task
 import io.lb.lbtasks.task.presentation.widgets.NewTaskBottomSheetContent
 import io.lb.lbtasks.task.presentation.widgets.TaskCard
+import io.lb.lbtasks.task.presentation.widgets.TaskShimmerCard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -243,28 +244,34 @@ private fun TasksScaffold(
                 )
 
                 LazyColumn {
-                    items(state.tasks) { task ->
-                        TaskCard(
-                            task = task,
-                            onClickCard = {
-                                navController.navigate(
-                                    MainScreens.TaskDetailsScreen.name + "/${task.toJson()}"
-                                )
-                            },
-                            onClickDelete = {
-                                onRequestDelete.invoke(task)
-
-                                coroutineScope.launch {
-                                    val result = snackBarHostState.showSnackbar(
-                                        message = context.getString(R.string.task_deleted),
-                                        actionLabel = context.getString(R.string.undo)
+                    if (state.loading) {
+                        items(3) {
+                            TaskShimmerCard()
+                        }
+                    } else {
+                        items(state.tasks) { task ->
+                            TaskCard(
+                                task = task,
+                                onClickCard = {
+                                    navController.navigate(
+                                        MainScreens.TaskDetailsScreen.name + "/${task.toJson()}"
                                     )
-                                    if (result == SnackbarResult.ActionPerformed) {
-                                        onRestoreTask.invoke()
+                                },
+                                onClickDelete = {
+                                    onRequestDelete.invoke(task)
+
+                                    coroutineScope.launch {
+                                        val result = snackBarHostState.showSnackbar(
+                                            message = context.getString(R.string.task_deleted),
+                                            actionLabel = context.getString(R.string.undo)
+                                        )
+                                        if (result == SnackbarResult.ActionPerformed) {
+                                            onRestoreTask.invoke()
+                                        }
                                     }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
             }

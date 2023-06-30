@@ -1,23 +1,20 @@
 package io.lb.lbtasks.task.data.repository
 
-import io.lb.lbtasks.task.data.local.TaskDao
+import io.lb.lbtasks.sign_in.domain.model.UserData
+import io.lb.lbtasks.task.data.remote.RealtimeDatabaseClient
 import io.lb.lbtasks.task.domain.model.Task
 import io.lb.lbtasks.task.domain.repository.TaskRepository
 
 class TaskRepositoryImpl(
-    private val dao: TaskDao,
+    private val realtimeDatabaseClient: RealtimeDatabaseClient,
 ) : TaskRepository {
-    override suspend fun deleteTask(task: Task) {
-        dao.deleteTask(task)
+    override suspend fun deleteTask(userData: UserData, task: Task) {
+        realtimeDatabaseClient.deleteTask(userData, task)
     }
 
-    override fun getTasks() = dao.searchTasks()
+    override fun getTasks(userData: UserData) = realtimeDatabaseClient.getTasksFromUser(userData)
 
-    override suspend fun insertTask(task: Task) {
-        dao.insertSingleTask(task)
-    }
-
-    override suspend fun updateTask(task: Task) {
-        dao.updateTask(task)
+    override suspend fun insertTask(userData: UserData, task: Task) {
+        realtimeDatabaseClient.insertTask(userData, task)
     }
 }

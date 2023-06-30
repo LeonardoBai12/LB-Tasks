@@ -14,7 +14,6 @@ The application is built using the following technologies:
 
 * [Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) for asynchronous programming.
 * [ViewModel](https://developer.android.com/reference/androidx/lifecycle/ViewModel) for managing UI-related data.
-* [Room DB](https://developer.android.com/training/data-storage) for local data storage.
 * [Jetpack Compose](https://developer.android.com/jetpack/compose/documentation) for building the UI.
 * [Hilt](https://developer.android.com/training/dependency-injection/hilt-android) for dependency injection.
 * [Firebase Realtime Database](https://firebase.google.com/docs/database?hl=pt-br) for Cloud storage.
