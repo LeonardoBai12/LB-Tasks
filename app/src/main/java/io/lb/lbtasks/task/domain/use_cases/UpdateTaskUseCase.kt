@@ -16,7 +16,7 @@ class UpdateTaskUseCase(
         deadlineTime: String
     ) {
         if (task.title.isBlank())
-            throw Exception("Atenção! Adicione um título à sua tarefa para continuar.")
+            throw Exception("You can't save without a title")
 
         repository.updateTask(
             task.apply {

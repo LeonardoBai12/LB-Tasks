@@ -14,7 +14,7 @@ class InsertTaskUseCase(
         deadlineTime: String
     ) {
         if (title.isBlank())
-            throw Exception("Atenção! Adicione um título à sua tarefa para continuar.")
+            throw Exception("You can't save without a title")
 
         repository.insertTask(
             Task(
