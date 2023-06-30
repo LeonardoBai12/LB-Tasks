@@ -1,13 +1,10 @@
 package io.lb.lbtasks.task.domain.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.google.gson.Gson
+import java.util.UUID
 
-@Entity(tableName = "tasks")
 data class Task(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int? = null,
+    val uuid: String = UUID.randomUUID().toString(),
     var title: String,
     var description: String? = null,
     val taskType: String,
@@ -16,6 +13,17 @@ data class Task(
 ) {
     companion object {
         fun fromJson(json: String): Task = Gson().fromJson(json, Task::class.java)
+
+        fun fromSnapshot(hashMap: HashMap<String, String>): Task {
+            return Task(
+                uuid = hashMap["uuid"] ?: "",
+                title = hashMap["title"] ?: "",
+                description = hashMap["description"],
+                taskType = hashMap["taskType"] ?: "",
+                deadlineDate = hashMap["deadlineDate"],
+                deadlineTime = hashMap["deadlineTime"]
+            )
+        }
     }
 
     fun toJson() = Gson().toJson(this).toString()

@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.lb.lbtasks.sign_in.domain.model.UserData
 import io.lb.lbtasks.task.domain.use_cases.TaskUseCases
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -13,7 +14,7 @@ import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
-class TaskDetailsVIewModel @Inject constructor(
+class TaskDetailsViewModel @Inject constructor(
     private val useCases: TaskUseCases,
 ) : ViewModel() {
     private val _state = mutableStateOf(TaskDetailsState())
@@ -21,6 +22,8 @@ class TaskDetailsVIewModel @Inject constructor(
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
+
+    var userData: UserData? = null
 
     sealed class UiEvent {
         data class ShowToast(val message: String) : UiEvent()
@@ -59,6 +62,7 @@ class TaskDetailsVIewModel @Inject constructor(
                 _state.value.task ?: return@launch
 
                 useCases.insertTaskUseCase(
+                    userData = userData ?: return@launch,
                     title = title,
                     description = description,
                     taskType = _state.value.task!!.taskType,
@@ -83,12 +87,14 @@ class TaskDetailsVIewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                _state.value.task ?: return@launch
+                val task = _state.value.task ?: return@launch
 
                 useCases.updateTaskUseCase(
-                    task = _state.value.task!!,
+                    userData = userData ?: return@launch,
+                    task = task,
                     title = title,
                     description = description,
+                    taskType = _state.value.task!!.taskType,
                     deadlineDate = date,
                     deadlineTime = time,
                 )
@@ -99,13 +105,6 @@ class TaskDetailsVIewModel @Inject constructor(
                     _eventFlow.emit(UiEvent.ShowToast(it))
                 }
             }
-        }
-    }
-
-    private fun deleteTask() {
-        viewModelScope.launch {
-            _state.value.task ?: return@launch
-            useCases.deleteTaskUseCase(_state.value.task!!)
         }
     }
 }

@@ -111,7 +111,7 @@ fun TaskDetailsScreen(
                     .padding(horizontal = 72.dp, vertical = 16.dp),
                 text = stringResource(R.string.finish)
             ) {
-                state.task?.id?.let {
+                state.task?.title?.takeIf { it.isNotBlank() }?.let {
                     onRequestUpdate.invoke(
                         title.value,
                         description.value,
