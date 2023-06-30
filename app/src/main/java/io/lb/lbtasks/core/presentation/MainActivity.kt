@@ -16,7 +16,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,7 +34,7 @@ import io.lb.lbtasks.sign_in.presentation.sing_in.SignInViewModel
 import io.lb.lbtasks.task.domain.model.Task
 import io.lb.lbtasks.task.presentation.details.TaskDetailsEvent
 import io.lb.lbtasks.task.presentation.details.TaskDetailsScreen
-import io.lb.lbtasks.task.presentation.details.TaskDetailsVIewModel
+import io.lb.lbtasks.task.presentation.details.TaskDetailsViewModel
 import io.lb.lbtasks.task.presentation.listing.TaskEvent
 import io.lb.lbtasks.task.presentation.listing.TaskViewModel
 import io.lb.lbtasks.task.presentation.listing.TasksScreen
@@ -63,13 +65,15 @@ class MainActivity : ComponentActivity() {
                     val taskViewModel = hiltViewModel<TaskViewModel>()
                     val taskState = taskViewModel.state.value
 
-                    val taskDetailsViewModel = hiltViewModel<TaskDetailsVIewModel>()
+                    val taskDetailsViewModel = hiltViewModel<TaskDetailsViewModel>()
                     val taskDetailsState = taskDetailsViewModel.state.value
 
                     var startDestination = MainScreens.SignInScreen.name
 
                     signInViewModel.getSignedInUser()?.let {
                         startDestination = MainScreens.TaskScreen.name
+                        taskViewModel.userData = it
+                        taskDetailsViewModel.userData = it
                     }
 
                     NavHost(
@@ -137,13 +141,22 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(MainScreens.TaskScreen.name) {
+                            val userData = signInViewModel.getSignedInUser()
+
+                            LaunchedEffect(key1 = "") {
+                                lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                                    taskViewModel.getTasks(userData ?: return@repeatOnLifecycle)
+                                }
+                            }
+
                             TasksScreen(
                                 navController = navController,
-                                userData = signInViewModel.getSignedInUser(),
+                                userData = userData,
                                 state = taskState,
                                 onSignOut = {
                                     lifecycleScope.launch {
                                         signInViewModel.logout()
+                                        taskViewModel.clear()
                                         applicationContext.showToast(R.string.signed_out)
                                         navController.navigate(MainScreens.SignInScreen.name) {
                                             popUpTo(MainScreens.TaskScreen.name) {
@@ -175,10 +188,10 @@ class MainActivity : ComponentActivity() {
                             LaunchedEffect(key1 = MainScreens.TaskDetailsScreen.name) {
                                 taskDetailsViewModel.eventFlow.collectLatest { event ->
                                     when (event) {
-                                        is TaskDetailsVIewModel.UiEvent.Finish -> {
+                                        is TaskDetailsViewModel.UiEvent.Finish -> {
                                             navController.navigateUp()
                                         }
-                                        is TaskDetailsVIewModel.UiEvent.ShowToast -> {
+                                        is TaskDetailsViewModel.UiEvent.ShowToast -> {
                                             applicationContext.showToast(event.message)
                                         }
                                     }
@@ -210,7 +223,7 @@ class MainActivity : ComponentActivity() {
                                                 time = time,
                                             )
                                         )
-                                    }
+                                    },
                                 )
                             }
                         }

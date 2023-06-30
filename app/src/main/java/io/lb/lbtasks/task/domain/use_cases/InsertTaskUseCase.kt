@@ -1,5 +1,6 @@
 package io.lb.lbtasks.task.domain.use_cases
 
+import io.lb.lbtasks.sign_in.domain.model.UserData
 import io.lb.lbtasks.task.domain.model.Task
 import io.lb.lbtasks.task.domain.repository.TaskRepository
 
@@ -7,6 +8,7 @@ class InsertTaskUseCase(
     private val repository: TaskRepository
 ) {
     suspend operator fun invoke(
+        userData: UserData,
         title: String,
         description: String = "",
         taskType: String,
@@ -17,7 +19,8 @@ class InsertTaskUseCase(
             throw Exception("You can't save without a title")
 
         repository.insertTask(
-            Task(
+            userData = userData,
+            task = Task(
                 title = title,
                 description = description,
                 taskType = taskType,

@@ -1,12 +1,10 @@
 package io.lb.lbtasks.core.di
 
-import android.app.Application
-import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import io.lb.lbtasks.core.data.local.AppDatabase
+import io.lb.lbtasks.task.data.remote.RealtimeDatabaseClient
 import javax.inject.Singleton
 
 @Module
@@ -14,11 +12,7 @@ import javax.inject.Singleton
 object AppModule {
     @Provides
     @Singleton
-    fun providesDatabase(app: Application): AppDatabase {
-        return Room.databaseBuilder(
-            app,
-            AppDatabase::class.java,
-            "lbtasks.db"
-        ).build()
+    fun providesRealtimeDatabase(): RealtimeDatabaseClient {
+        return RealtimeDatabaseClient()
     }
 }
