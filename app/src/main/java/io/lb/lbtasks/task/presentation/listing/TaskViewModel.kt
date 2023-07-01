@@ -65,6 +65,8 @@ class TaskViewModel @Inject constructor(
         getTasksJob = useCases.getTasksUseCase(userData).onEach { result ->
             when (result) {
                 is Resource.Success -> {
+                    tasks.clear()
+
                     result.data?.let {
                         tasks.addAll(it)
 
