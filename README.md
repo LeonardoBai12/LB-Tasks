@@ -40,5 +40,5 @@ This process helps maintain code consistency and quality throughout the project.
 
 ## Demonstration
 
-You can watch a demo of the application's features on this [YouTube Video](https://www.youtube.com/watch?v=G3XYHBhCpFI)(PT-BR).
+You can watch a demo of the application's features on this [YouTube Video](https://www.youtube.com/watch?v=G3XYHBhCpFI) (PT-BR).
 
