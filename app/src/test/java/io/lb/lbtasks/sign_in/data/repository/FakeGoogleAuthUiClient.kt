@@ -5,6 +5,7 @@ import android.content.IntentSender
 import io.lb.lbtasks.sign_in.data.auth_client.GoogleAuthClient
 import io.lb.lbtasks.sign_in.domain.model.SignInResult
 import io.lb.lbtasks.sign_in.domain.model.UserData
+import io.lb.lbtasks.sign_in.domain.use_cases.userData
 import io.mockk.mockk
 
 class FakeGoogleAuthUiClient : GoogleAuthClient {
@@ -18,11 +19,9 @@ class FakeGoogleAuthUiClient : GoogleAuthClient {
             return SignInResult(data = null, errorMessage = "Email already in use.")
         }
 
-        user = UserData(
+        user = userData().copy(
             userId = "randomNewUserId",
-            userName = "Fellow User",
             email = email,
-            profilePictureUrl = null
         )
 
         return SignInResult(
@@ -43,11 +42,8 @@ class FakeGoogleAuthUiClient : GoogleAuthClient {
             return SignInResult(data = null, errorMessage = "Wrong password.")
         }
 
-        user = UserData(
-            userId = "randomOldUserId",
-            userName = "Fellow User",
+        user = userData().copy(
             email = email,
-            profilePictureUrl = null
         )
 
         return SignInResult(
@@ -61,11 +57,9 @@ class FakeGoogleAuthUiClient : GoogleAuthClient {
     }
 
     override suspend fun getSignInResultFromIntent(intent: Intent): SignInResult {
-        user = UserData(
+        user = userData().copy(
             userId = "randomNewUserId",
-            userName = "Fellow User",
             email = "someGoogleEmail@user.com",
-            profilePictureUrl = null
         )
 
         return SignInResult(

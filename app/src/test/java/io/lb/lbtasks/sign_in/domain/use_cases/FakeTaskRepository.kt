@@ -14,11 +14,9 @@ class FakeSignInRepository : SignInRepository {
     }
 
     override suspend fun signInWithEmailAndPassword(email: String, password: String): SignInResult {
-        user = UserData(
+        user = userData().copy(
             userId = "randomNewUserId",
-            userName = "Fellow User",
             email = email,
-            profilePictureUrl = null
         )
 
         return SignInResult(
@@ -28,11 +26,8 @@ class FakeSignInRepository : SignInRepository {
     }
 
     override suspend fun loginWithEmailAndPassword(email: String, password: String): SignInResult {
-        user = UserData(
-            userId = "randomOldUserId",
-            userName = "Fellow User",
+        user = userData().copy(
             email = email,
-            profilePictureUrl = null
         )
 
         return SignInResult(
@@ -42,11 +37,9 @@ class FakeSignInRepository : SignInRepository {
     }
 
     override suspend fun signInWithGoogle(data: Intent): SignInResult {
-        user = UserData(
+        user = userData().copy(
             userId = "randomGoogleUserId",
-            userName = "Fellow User",
             email = "googlefellow@user.com",
-            profilePictureUrl = null
         )
 
         return SignInResult(

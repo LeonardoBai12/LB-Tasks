@@ -34,13 +34,6 @@ internal class GetSignedInUserUseCaseTest {
 
         val result = useCase.invoke()
 
-        assertThat(result).isEqualTo(
-            UserData(
-                userId = "randomOldUserId",
-                userName = "Fellow User",
-                email = "fellow@user.com",
-                profilePictureUrl = null
-            )
-        )
+        assertThat(result).isEqualTo(userData())
     }
 }

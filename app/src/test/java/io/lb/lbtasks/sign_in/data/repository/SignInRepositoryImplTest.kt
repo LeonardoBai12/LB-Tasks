@@ -8,6 +8,7 @@ import io.lb.lbtasks.sign_in.data.repository.FakeGoogleAuthUiClient.Companion.OL
 import io.lb.lbtasks.sign_in.data.repository.FakeGoogleAuthUiClient.Companion.OLD_USER_PASSWORD
 import io.lb.lbtasks.sign_in.domain.model.UserData
 import io.lb.lbtasks.sign_in.domain.repository.SignInRepository
+import io.lb.lbtasks.sign_in.domain.use_cases.userData
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
@@ -38,11 +39,8 @@ class SignInRepositoryImplTest {
 
         val result = repository.getSignedInUser()
         assertThat(result).isEqualTo(
-            UserData(
-                userId = "randomOldUserId",
-                userName = "Fellow User",
+            userData().copy(
                 email = OLD_USER_EMAIL,
-                profilePictureUrl = null
             )
         )
     }
@@ -55,11 +53,8 @@ class SignInRepositoryImplTest {
         )
 
         assertThat(result.data).isEqualTo(
-            UserData(
-                userId = "randomOldUserId",
-                userName = "Fellow User",
+            userData().copy(
                 email = OLD_USER_EMAIL,
-                profilePictureUrl = null
             )
         )
     }
@@ -92,11 +87,9 @@ class SignInRepositoryImplTest {
         )
 
         assertThat(result.data).isEqualTo(
-            UserData(
+            userData().copy(
                 userId = "randomNewUserId",
-                userName = "Fellow User",
                 email = "newUser@user.com",
-                profilePictureUrl = null
             )
         )
     }
@@ -106,11 +99,9 @@ class SignInRepositoryImplTest {
         val result = repository.signInWithGoogle(mockk(relaxed = true))
 
         assertThat(result.data).isEqualTo(
-            UserData(
+            userData().copy(
                 userId = "randomNewUserId",
-                userName = "Fellow User",
                 email = "someGoogleEmail@user.com",
-                profilePictureUrl = null
             )
         )
     }

@@ -23,11 +23,9 @@ internal class SignInWithGoogleUseCaseTest {
     fun `Signing in with Google, returns the Google user`() = runTest {
         val result = useCase.invoke(mockk(relaxed = true))
         assertThat(result.data).isEqualTo(
-            UserData(
+            userData().copy(
                 userId = "randomGoogleUserId",
-                userName = "Fellow User",
                 email = "googlefellow@user.com",
-                profilePictureUrl = null
             )
         )
     }

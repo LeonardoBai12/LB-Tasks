@@ -27,14 +27,7 @@ internal class LoginWithEmailAndPasswordUseCaseTest {
             password = "Correct",
         )
 
-        assertThat(result.data).isEqualTo(
-            UserData(
-                userId = "randomOldUserId",
-                userName = "Fellow User",
-                email = "fellow@user.com",
-                profilePictureUrl = null
-            )
-        )
+        assertThat(result.data).isEqualTo(userData())
     }
 
     @Test

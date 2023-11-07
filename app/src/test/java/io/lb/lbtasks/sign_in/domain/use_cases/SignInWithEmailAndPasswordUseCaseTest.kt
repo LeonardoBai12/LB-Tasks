@@ -29,11 +29,8 @@ internal class SignInWithEmailAndPasswordUseCaseTest {
         )
 
         assertThat(result.data).isEqualTo(
-            UserData(
+            userData().copy(
                 userId = "randomNewUserId",
-                userName = "Fellow User",
-                email = "fellow@user.com",
-                profilePictureUrl = null
             )
         )
     }
