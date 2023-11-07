@@ -26,7 +26,7 @@ internal class GetSignedInUserUseCaseTest {
     }
 
     @Test
-    fun `Getting user after logging in, returns the user`() = runTest {
+    fun `Getting user right after logging in, returns the user`() = runTest {
         repository.loginWithEmailAndPassword(
             "fellow@user.com",
             "Correct password"
