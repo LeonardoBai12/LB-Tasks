@@ -2,6 +2,8 @@ package io.lb.lbtasks.sign_in.di
 
 import android.app.Application
 import com.google.android.gms.auth.api.identity.Identity
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,6 +42,7 @@ object SignInModule {
     @Provides
     fun providesGoogleAuthUiClient(app: Application): GoogleAuthClientImpl {
         return GoogleAuthClientImpl(
+            auth = Firebase.auth,
             context = app.applicationContext,
             oneTapClient = Identity.getSignInClient(app.applicationContext)
         )
