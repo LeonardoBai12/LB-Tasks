@@ -4,7 +4,7 @@ import io.lb.lbtasks.core.util.isValidEmail
 import io.lb.lbtasks.sign_in.domain.model.SignInResult
 import io.lb.lbtasks.sign_in.domain.repository.SignInRepository
 
-class LoginWIthEmailAndPasswordUseCase(
+class LoginWithEmailAndPasswordUseCase(
     private val repository: SignInRepository
 ) {
     suspend operator fun invoke(email: String, password: String): SignInResult {

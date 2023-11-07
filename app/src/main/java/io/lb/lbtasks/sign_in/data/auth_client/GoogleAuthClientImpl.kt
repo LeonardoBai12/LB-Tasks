@@ -6,9 +6,8 @@ import android.content.IntentSender
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions
 import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import io.lb.lbtasks.R
 import io.lb.lbtasks.sign_in.domain.model.SignInResult
 import io.lb.lbtasks.sign_in.domain.model.UserData
@@ -16,13 +15,15 @@ import kotlinx.coroutines.tasks.await
 import java.lang.Exception
 import java.util.concurrent.CancellationException
 
-class GoogleAuthUiClient(
+class GoogleAuthClientImpl(
+    private val auth: FirebaseAuth,
     private val context: Context,
     private val oneTapClient: SignInClient
-) {
-    private val auth = Firebase.auth
-
-    suspend fun signInWithEmailAndPassword(email: String, password: String): SignInResult {
+) : GoogleAuthClient {
+    override suspend fun signInWithEmailAndPassword(
+        email: String,
+        password: String
+    ): SignInResult {
         val result = try {
             auth.createUserWithEmailAndPassword(
                 email,
@@ -45,7 +46,10 @@ class GoogleAuthUiClient(
         )
     }
 
-    suspend fun loginWithEmailAndPassword(email: String, password: String): SignInResult {
+    override suspend fun loginWithEmailAndPassword(
+        email: String,
+        password: String
+    ): SignInResult {
         val result = try {
             auth.signInWithEmailAndPassword(
                 email,
@@ -68,7 +72,7 @@ class GoogleAuthUiClient(
         )
     }
 
-    suspend fun signIn(): IntentSender? {
+    override suspend fun signIn(): IntentSender? {
         val result = try {
             oneTapClient.beginSignIn(
                 buildSignInRequest()
@@ -80,7 +84,7 @@ class GoogleAuthUiClient(
         return result?.pendingIntent?.intentSender
     }
 
-    suspend fun getSignInResultFromIntent(intent: Intent): SignInResult {
+    override suspend fun getSignInResultFromIntent(intent: Intent): SignInResult {
         val credential = oneTapClient.getSignInCredentialFromIntent(intent)
         val googleIdToken = credential.googleIdToken
         val googleCredentials = GoogleAuthProvider.getCredential(googleIdToken, null)
@@ -106,7 +110,7 @@ class GoogleAuthUiClient(
         }
     }
 
-    fun getSignedInUser(): UserData? = auth.currentUser?.run {
+    override fun getSignedInUser(): UserData? = auth.currentUser?.run {
         UserData(
             userId = uid,
             userName = displayName,
@@ -115,7 +119,7 @@ class GoogleAuthUiClient(
         )
     }
 
-    suspend fun logout() {
+    override suspend fun logout() {
         try {
             oneTapClient.signOut().await()
             auth.signOut()
