@@ -3,12 +3,10 @@ package io.lb.lbtasks.sign_in.domain.use_cases
 import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.lb.lbtasks.sign_in.domain.model.UserData
 import io.lb.lbtasks.sign_in.domain.repository.SignInRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
 internal class SignInWithEmailAndPasswordUseCaseTest {
     private lateinit var repository: SignInRepository

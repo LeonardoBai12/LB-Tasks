@@ -8,8 +8,6 @@ import com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdToken
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import io.lb.lbtasks.R
 import io.lb.lbtasks.sign_in.domain.model.SignInResult
 import io.lb.lbtasks.sign_in.domain.model.UserData

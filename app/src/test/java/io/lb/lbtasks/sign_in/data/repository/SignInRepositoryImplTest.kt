@@ -6,7 +6,6 @@ import assertk.assertions.isNull
 import io.lb.lbtasks.sign_in.data.auth_client.GoogleAuthClient
 import io.lb.lbtasks.sign_in.data.repository.FakeGoogleAuthUiClient.Companion.OLD_USER_EMAIL
 import io.lb.lbtasks.sign_in.data.repository.FakeGoogleAuthUiClient.Companion.OLD_USER_PASSWORD
-import io.lb.lbtasks.sign_in.domain.model.UserData
 import io.lb.lbtasks.sign_in.domain.repository.SignInRepository
 import io.lb.lbtasks.sign_in.domain.use_cases.userData
 import io.mockk.mockk

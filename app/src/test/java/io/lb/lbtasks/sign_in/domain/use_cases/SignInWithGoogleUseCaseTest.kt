@@ -2,7 +2,6 @@ package io.lb.lbtasks.sign_in.domain.use_cases
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.lb.lbtasks.sign_in.domain.model.UserData
 import io.lb.lbtasks.sign_in.domain.repository.SignInRepository
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
