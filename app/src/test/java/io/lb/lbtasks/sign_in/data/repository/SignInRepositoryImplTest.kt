@@ -13,7 +13,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class SignInRepositoryImplTest {
+internal class SignInRepositoryImplTest {
     private lateinit var authClient: GoogleAuthClient
     private lateinit var repository: SignInRepository
 

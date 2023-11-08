@@ -4,7 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import io.lb.lbtasks.task.data.remote.RealtimeDatabaseClient
+import io.lb.lbtasks.task.data.remote.RealtimeDatabaseClientImpl
 import javax.inject.Singleton
 
 @Module
@@ -12,7 +12,7 @@ import javax.inject.Singleton
 object AppModule {
     @Provides
     @Singleton
-    fun providesRealtimeDatabase(): RealtimeDatabaseClient {
-        return RealtimeDatabaseClient()
+    fun providesRealtimeDatabase(): RealtimeDatabaseClientImpl {
+        return RealtimeDatabaseClientImpl()
     }
 }

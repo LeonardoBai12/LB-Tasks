@@ -25,7 +25,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class GoogleAuthClientImplTest {
+internal class GoogleAuthClientImplTest {
     private lateinit var auth: FirebaseAuth
     private lateinit var context: Context
     private lateinit var oneTapClient: SignInClient
