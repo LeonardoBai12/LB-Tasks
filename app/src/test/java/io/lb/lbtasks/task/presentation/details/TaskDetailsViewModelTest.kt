@@ -1,5 +1,6 @@
 package io.lb.lbtasks.task.presentation.details
 
+import io.lb.lbtasks.sign_in.domain.use_cases.userData
 import io.lb.lbtasks.task.domain.use_cases.TaskUseCases
 import io.lb.lbtasks.task.presentation.fakeUseCases
 import io.lb.lbtasks.util.MainCoroutineExtension
@@ -17,6 +18,7 @@ internal class TaskDetailsViewModelTest {
     fun setUp() {
         useCases = fakeUseCases()
         viewModel = TaskDetailsViewModel(useCases)
+        viewModel.userData = userData()
     }
 
 

@@ -118,7 +118,7 @@ class TaskViewModel @Inject constructor(
         }
     }
 
-    fun clear() {
+    fun clearState() {
         _state.update { TaskState() }
     }
 }

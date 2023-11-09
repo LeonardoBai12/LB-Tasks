@@ -165,7 +165,7 @@ class MainActivity : ComponentActivity() {
                                 onSignOut = {
                                     lifecycleScope.launch {
                                         signInViewModel.onEvent(SignInEvent.RequestLogout)
-                                        taskViewModel.clear()
+                                        taskViewModel.clearState()
                                         applicationContext.showToast(R.string.signed_out)
                                         navController.navigate(MainScreens.SignInScreen.name) {
                                             popUpTo(MainScreens.TaskScreen.name) {
