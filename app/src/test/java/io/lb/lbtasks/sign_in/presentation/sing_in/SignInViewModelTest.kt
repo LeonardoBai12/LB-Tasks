@@ -1,5 +1,6 @@
 package io.lb.lbtasks.sign_in.presentation.sing_in
 
+import androidx.compose.runtime.collectAsState
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -54,7 +55,6 @@ internal class SignInViewModelTest {
     @Test
     fun `Getting signed in user, returns null`() = runTest {
         val result = viewModel.getSignedInUser()
-
         advanceUntilIdle()
 
         assertThat(result).isNull()
@@ -66,11 +66,9 @@ internal class SignInViewModelTest {
             "fellow@user.com",
             "password"
         )
-
         advanceUntilIdle()
 
         val result = viewModel.getSignedInUser()
-
         advanceUntilIdle()
 
         assertThat(result).isEqualTo(
@@ -84,14 +82,12 @@ internal class SignInViewModelTest {
             "fellow@user.com",
             "password"
         )
-
         advanceUntilIdle()
 
         viewModel.logout()
         advanceUntilIdle()
 
         val result = viewModel.getSignedInUser()
-
         advanceUntilIdle()
 
         assertThat(result).isNull()
@@ -104,11 +100,9 @@ internal class SignInViewModelTest {
             "password",
             "password"
         )
-
         advanceUntilIdle()
 
         val result = viewModel.getSignedInUser()
-
         advanceUntilIdle()
 
         assertThat(result).isEqualTo(
@@ -120,125 +114,51 @@ internal class SignInViewModelTest {
 
     @Test
     fun `Signing in, state is success`() = runTest {
-        viewModel.signInWithEmailAndPassword(
-            "fellow@user.com",
-            "password",
-            "password"
-        )
+        viewModel.state.test {
+            val emission1 = awaitItem()
+            assertThat(emission1.isSignInSuccessful).isFalse()
+            assertThat(emission1.signInError).isNull()
 
-        advanceUntilIdle()
+            viewModel.signInWithEmailAndPassword(
+                "fellow@user.com",
+                "password",
+                "password"
+            )
 
-        assertThat(viewModel.state.value.isSignInSuccessful).isTrue()
-        assertThat(viewModel.state.value.signInError).isNullOrEmpty()
+            val emission2 = awaitItem()
+            assertThat(emission2.isSignInSuccessful).isTrue()
+            assertThat(emission2.signInError).isNullOrEmpty()
+        }
     }
 
     @Test
     fun `Signing in with no password, state has error message`() = runTest {
-        viewModel.signInWithEmailAndPassword(
-            "fellow@user.com",
-            "",
-            "password"
-        )
+        viewModel.state.test {
+            val emission1 = awaitItem()
+            assertThat(emission1.isSignInSuccessful).isFalse()
+            assertThat(emission1.signInError).isNull()
 
-        advanceUntilIdle()
-
-        assertThat(viewModel.state.value.isSignInSuccessful).isFalse()
-        assertThat(viewModel.state.value.signInError).isEqualTo("Write your password")
-    }
-
-    @Test
-    fun `Signing in with password not matching, state has error message`() = runTest {
-        viewModel.signInWithEmailAndPassword(
-            "fellow@user.com",
-            "password",
-            "wrongPassword"
-        )
-
-        viewModel.eventFlow.test {
-            val emission = awaitItem()
-            assertThat(emission)
-                .isEqualTo(
-                    SignInViewModel.UiEvent.ShowToast(
-                        "The passwords don't match"
-                    )
-                )
-        }
-
-        advanceUntilIdle()
-
-        assertThat(viewModel.state.value.isSignInSuccessful).isFalse()
-        assertThat(viewModel.state.value.signInError).isEqualTo("The passwords don't match")
-    }
-
-    @Test
-    fun `Signing in with no email, state has error message`() = runTest {
-        viewModel.signInWithEmailAndPassword(
-            "",
-            "password",
-            "password"
-        )
-
-        viewModel.eventFlow.test {
-            val emission = awaitItem()
-            assertThat(emission).isEqualTo(
-                SignInViewModel.UiEvent.ShowToast(
-                    "Write a valid email"
-                )
+            viewModel.signInWithEmailAndPassword(
+                "fellow@user.com",
+                "",
+                "password"
             )
+
+            val emission2 = awaitItem()
+            assertThat(emission2.isSignInSuccessful).isFalse()
+            assertThat(emission2.signInError).isEqualTo("Write your password")
         }
-
-        advanceUntilIdle()
-
-        assertThat(viewModel.state.value.isSignInSuccessful).isFalse()
-        assertThat(viewModel.state.value.signInError)
-            .isEqualTo("Write a valid email")
     }
 
     @Test
-    fun `Signing in with invalid email, state has error message`() = runTest {
-        viewModel.signInWithEmailAndPassword(
-            "fellowuser.com",
-            "password",
-            "password"
-        )
-
+    fun `Signing in with no password, shows toast`() = runTest {
         viewModel.eventFlow.test {
-            val emission = awaitItem()
-            assertThat(emission).isEqualTo(
-                SignInViewModel.UiEvent.ShowToast(
-                    "Write a valid email"
-                )
+            viewModel.signInWithEmailAndPassword(
+                "fellow@user.com",
+                "",
+                "password"
             )
-        }
 
-        advanceUntilIdle()
-
-        assertThat(viewModel.state.value.isSignInSuccessful).isFalse()
-        assertThat(viewModel.state.value.signInError)
-            .isEqualTo("Write a valid email")
-    }
-
-    @Test
-    fun `Logging in, state is success`() = runTest {
-        viewModel.loginWithEmailAndPassword(
-            "fellow@user.com",
-            "password",
-        )
-
-        advanceUntilIdle()
-
-        assertThat(viewModel.state.value.isSignInSuccessful).isTrue()
-        assertThat(viewModel.state.value.signInError).isNullOrEmpty()
-    }
-
-    @Test
-    fun `Logging in with no password, state has error message`() = runTest {
-        viewModel.loginWithEmailAndPassword(
-            "fellow@user.com",
-            "",
-        )
-
-        viewModel.eventFlow.test {
             val emission = awaitItem()
             assertThat(emission)
                 .isEqualTo(
@@ -247,22 +167,200 @@ internal class SignInViewModelTest {
                     )
                 )
         }
+    }
 
-        advanceUntilIdle()
+    @Test
+    fun `Signing in with password not matching, state has error message`() = runTest {
+        viewModel.state.test {
+            val emission1 = awaitItem()
+            assertThat(emission1.isSignInSuccessful).isFalse()
+            assertThat(emission1.signInError).isNull()
 
-        assertThat(viewModel.state.value.isSignInSuccessful).isFalse()
-        assertThat(viewModel.state.value.signInError)
-            .isEqualTo("Write your password")
+            viewModel.signInWithEmailAndPassword(
+                "fellow@user.com",
+                "password",
+                "wrongPassword"
+            )
+
+            val emission2 = awaitItem()
+            assertThat(emission2.isSignInSuccessful).isFalse()
+            assertThat(emission2.signInError).isEqualTo("The passwords don't match")
+        }
+    }
+
+    @Test
+    fun `Signing in with password not matching, shows toast`() = runTest {
+        viewModel.eventFlow.test {
+            viewModel.signInWithEmailAndPassword(
+                "fellow@user.com",
+                "password",
+                "wrongPassword"
+            )
+
+            val emission = awaitItem()
+            assertThat(emission)
+                .isEqualTo(
+                    SignInViewModel.UiEvent.ShowToast(
+                        "The passwords don't match"
+                    )
+                )
+        }
+    }
+
+    @Test
+    fun `Signing in with no email, state has error message`() = runTest {
+        viewModel.state.test {
+            val emission1 = awaitItem()
+            assertThat(emission1.isSignInSuccessful).isFalse()
+            assertThat(emission1.signInError).isNull()
+
+            viewModel.signInWithEmailAndPassword(
+                "",
+                "password",
+                "password"
+            )
+
+            val emission2 = awaitItem()
+            assertThat(emission2.isSignInSuccessful).isFalse()
+            assertThat(emission2.signInError).isEqualTo("Write a valid email")
+        }
+    }
+
+    @Test
+    fun `Signing in with no email, shows toast`() = runTest {
+        viewModel.eventFlow.test {
+            viewModel.signInWithEmailAndPassword(
+                "",
+                "password",
+                "password"
+            )
+
+            val emission = awaitItem()
+            assertThat(emission).isEqualTo(
+                SignInViewModel.UiEvent.ShowToast(
+                    "Write a valid email"
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `Signing in with invalid email, state has error message`() = runTest {
+        viewModel.state.test {
+            val emission1 = awaitItem()
+            assertThat(emission1.isSignInSuccessful).isFalse()
+            assertThat(emission1.signInError).isNull()
+
+            viewModel.signInWithEmailAndPassword(
+                "fellowuser.com",
+                "password",
+                "password"
+            )
+
+            val emission2 = awaitItem()
+            assertThat(emission2.isSignInSuccessful).isFalse()
+            assertThat(emission2.signInError).isEqualTo("Write a valid email")
+        }
+    }
+
+    @Test
+    fun `Signing in with invalid email, shows toast`() = runTest {
+        viewModel.eventFlow.test {
+            viewModel.signInWithEmailAndPassword(
+                "fellowuser.com",
+                "password",
+                "password"
+            )
+
+            val emission = awaitItem()
+            assertThat(emission).isEqualTo(
+                SignInViewModel.UiEvent.ShowToast(
+                    "Write a valid email"
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `Logging in, state is success`() = runTest {
+        viewModel.state.test {
+            val emission1 = awaitItem()
+            assertThat(emission1.isSignInSuccessful).isFalse()
+            assertThat(emission1.signInError).isNull()
+
+            viewModel.loginWithEmailAndPassword(
+                "fellow@user.com",
+                "password",
+            )
+
+            val emission2 = awaitItem()
+            assertThat(emission2.isSignInSuccessful).isTrue()
+            assertThat(emission2.signInError).isNullOrEmpty()
+        }
+    }
+
+    @Test
+    fun `Logging in with no password, state has error message`() = runTest {
+        viewModel.state.test {
+            val emission1 = awaitItem()
+            assertThat(emission1.isSignInSuccessful).isFalse()
+            assertThat(emission1.signInError).isNull()
+
+            viewModel.loginWithEmailAndPassword(
+                "fellow@user.com",
+                "",
+            )
+
+            val emission2 = awaitItem()
+            assertThat(emission2.isSignInSuccessful).isFalse()
+            assertThat(emission2.signInError).isEqualTo("Write your password")
+        }
+    }
+
+    @Test
+    fun `Logging in with no password, shows toast`() = runTest {
+        viewModel.eventFlow.test {
+            viewModel.loginWithEmailAndPassword(
+                "fellow@user.com",
+                "",
+            )
+
+            val emission = awaitItem()
+            assertThat(emission)
+                .isEqualTo(
+                    SignInViewModel.UiEvent.ShowToast(
+                        "Write your password"
+                    )
+                )
+        }
     }
 
     @Test
     fun `Logging in with no email, state has error message`() = runTest {
-        viewModel.loginWithEmailAndPassword(
-            "",
-            "password",
-        )
+        viewModel.state.test {
+            val emission1 = awaitItem()
+            assertThat(emission1.isSignInSuccessful).isFalse()
+            assertThat(emission1.signInError).isNull()
 
+            viewModel.loginWithEmailAndPassword(
+                "",
+                "password",
+            )
+
+            val emission2 = awaitItem()
+            assertThat(emission2.isSignInSuccessful).isFalse()
+            assertThat(emission2.signInError).isEqualTo("Write a valid email")
+        }
+    }
+
+    @Test
+    fun `Logging in with no email, shows toast`() = runTest {
         viewModel.eventFlow.test {
+            viewModel.loginWithEmailAndPassword(
+                "",
+                "password",
+            )
+
             val emission = awaitItem()
             assertThat(emission).isEqualTo(
                 SignInViewModel.UiEvent.ShowToast(
@@ -270,22 +368,34 @@ internal class SignInViewModelTest {
                 )
             )
         }
-
-        advanceUntilIdle()
-
-        assertThat(viewModel.state.value.isSignInSuccessful).isFalse()
-        assertThat(viewModel.state.value.signInError)
-            .isEqualTo("Write a valid email")
     }
 
     @Test
     fun `Logging in with invalid email, state has error message`() = runTest {
-        viewModel.loginWithEmailAndPassword(
-            "fellowuser.com",
-            "password",
-        )
+        viewModel.state.test {
+            val emission1 = awaitItem()
+            assertThat(emission1.isSignInSuccessful).isFalse()
+            assertThat(emission1.signInError).isNull()
 
+            viewModel.loginWithEmailAndPassword(
+                "fellowuser.com",
+                "password",
+            )
+
+            val emission2 = awaitItem()
+            assertThat(emission2.isSignInSuccessful).isFalse()
+            assertThat(emission2.signInError).isEqualTo("Write a valid email")
+        }
+    }
+
+    @Test
+    fun `Logging in with invalid email, shows toast`() = runTest {
         viewModel.eventFlow.test {
+            viewModel.loginWithEmailAndPassword(
+                "fellowuser.com",
+                "password",
+            )
+
             val emission = awaitItem()
             assertThat(emission).isEqualTo(
                 SignInViewModel.UiEvent.ShowToast(
@@ -293,26 +403,24 @@ internal class SignInViewModelTest {
                 )
             )
         }
-
-        advanceUntilIdle()
-
-        assertThat(viewModel.state.value.isSignInSuccessful).isFalse()
-        assertThat(viewModel.state.value.signInError)
-            .isEqualTo("Write a valid email")
     }
 
     @Test
     fun `Resetting state, makes the state brand new`() = runTest {
         viewModel.loginWithEmailAndPassword(
-            "fellowuser.com",
+            "fellow@user.com",
             "password",
         )
-
         advanceUntilIdle()
 
-        viewModel.resetState()
+        val state = viewModel.state
+        assertThat(state.value.isSignInSuccessful).isTrue()
+        assertThat(state.value.signInError).isNullOrEmpty()
 
-        assertThat(viewModel.state.value.isSignInSuccessful).isFalse()
-        assertThat(viewModel.state.value.signInError).isNull()
+        viewModel.resetState()
+        advanceUntilIdle()
+
+        assertThat(state.value.isSignInSuccessful).isFalse()
+        assertThat(state.value.signInError).isNull()
     }
 }

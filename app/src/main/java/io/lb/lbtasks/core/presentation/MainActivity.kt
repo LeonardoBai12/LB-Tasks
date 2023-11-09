@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
 
                     val signInViewModel = hiltViewModel<SignInViewModel>()
-                    val signInState = signInViewModel.state.value
+                    val signInState = signInViewModel.state.collectAsState().value
 
                     val taskViewModel = hiltViewModel<TaskViewModel>()
                     val taskState = taskViewModel.state.collectAsState().value

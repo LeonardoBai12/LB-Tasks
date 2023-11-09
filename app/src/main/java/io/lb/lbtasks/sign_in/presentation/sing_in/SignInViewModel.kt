@@ -2,15 +2,16 @@ package io.lb.lbtasks.sign_in.presentation.sing_in
 
 import android.content.Intent
 import android.content.IntentSender
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.lb.lbtasks.sign_in.domain.model.SignInResult
 import io.lb.lbtasks.sign_in.domain.use_cases.SignInUseCases
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject
@@ -19,8 +20,8 @@ import javax.inject.Inject
 class SignInViewModel @Inject constructor(
     private val useCases: SignInUseCases
 ) : ViewModel() {
-    private val _state = mutableStateOf(SignInState())
-    val state: State<SignInState> = _state
+    private val _state = MutableStateFlow(SignInState())
+    val state: StateFlow<SignInState> = _state
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -88,10 +89,12 @@ class SignInViewModel @Inject constructor(
     }
 
     private fun onSignInResult(result: SignInResult) {
-        _state.value = _state.value.copy(
-            isSignInSuccessful = result.data != null,
-            signInError = result.errorMessage
-        )
+        _state.update {
+            it.copy(
+                isSignInSuccessful = result.data != null,
+                signInError = result.errorMessage
+            )
+        }
 
         result.errorMessage?.takeIf {
             it.isNotBlank()
@@ -109,6 +112,6 @@ class SignInViewModel @Inject constructor(
     }
 
     fun resetState() {
-        _state.value = SignInState()
+        _state.update { SignInState() }
     }
 }
