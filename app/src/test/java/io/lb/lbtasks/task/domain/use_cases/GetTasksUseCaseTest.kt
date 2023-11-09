@@ -37,7 +37,7 @@ internal class GetTasksUseCaseTest {
             advanceUntilIdle()
         }
 
-        repository.getTasks(userData()).test {
+        useCase.invoke(userData()).test {
             val emission1 = awaitItem()
 
             assertThat(emission1.data).isNull()
