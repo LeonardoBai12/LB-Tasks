@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.lb.lbtasks.sign_in.domain.model.SignInResult
+import io.lb.lbtasks.sign_in.domain.model.UserData
 import io.lb.lbtasks.sign_in.domain.use_cases.SignInUseCases
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,11 +27,44 @@ class SignInViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
+    var currentUser: UserData? = null
+
+    init {
+        getSignedInUser()
+    }
+
     sealed class UiEvent {
         data class ShowToast(val message: String) : UiEvent()
     }
 
-    fun signInWithEmailAndPassword(
+    fun onEvent(event: SignInEvent) {
+        when (event) {
+            is SignInEvent.RequestSignInWithGoogle -> {
+                signInWithGoogle(event.data)
+            }
+            SignInEvent.LoadSignedInUser -> {
+                getSignedInUser()
+            }
+            is SignInEvent.RequestLogin -> {
+                loginWithEmailAndPassword(
+                    event.email,
+                    event.password
+                )
+            }
+            SignInEvent.RequestLogout -> {
+                logout()
+            }
+            is SignInEvent.RequestSignIn -> {
+                signInWithEmailAndPassword(
+                    event.email,
+                    event.password,
+                    event.repeatedPassword
+                )
+            }
+        }
+    }
+
+    private fun signInWithEmailAndPassword(
         email: String,
         password: String,
         repeatedPassword: String
@@ -50,7 +84,7 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun loginWithEmailAndPassword(
+    private fun loginWithEmailAndPassword(
         email: String,
         password: String,
     ) {
@@ -68,13 +102,15 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun getSignedInUser() = useCases.getSignedInUserUseCase()
+    private fun getSignedInUser() {
+        currentUser = useCases.getSignedInUserUseCase()
+    }
 
     suspend fun signIn(): IntentSender? {
         return useCases.signInUseCase()
     }
 
-    fun signInWithGoogle(data: Intent?) {
+    private fun signInWithGoogle(data: Intent?) {
         viewModelScope.launch {
             val result = try {
                 val signInResult = useCases.signInWithGoogleUseCase(
@@ -105,7 +141,7 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun logout() {
+    private fun logout() {
         viewModelScope.launch {
             useCases.logoutUseCase()
         }

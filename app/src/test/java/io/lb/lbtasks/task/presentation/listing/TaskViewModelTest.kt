@@ -1,20 +1,25 @@
 package io.lb.lbtasks.task.presentation.listing
 
-import app.cash.turbine.test
-import assertk.assertThat
-import assertk.assertions.isEmpty
-import assertk.assertions.isFalse
-import assertk.assertions.isTrue
+import io.lb.lbtasks.task.domain.use_cases.TaskUseCases
+import io.lb.lbtasks.task.presentation.details.TaskDetailsViewModel
+import io.lb.lbtasks.task.presentation.fakeUseCases
 import io.lb.lbtasks.util.MainCoroutineExtension
-import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExperimentalCoroutinesApi
 @ExtendWith(MainCoroutineExtension::class)
 internal class TaskViewModelTest {
+    private lateinit var useCases: TaskUseCases
+    private lateinit var viewModel: TaskViewModel
+
+    @BeforeEach
+    fun setUp() {
+        useCases = fakeUseCases()
+        viewModel = TaskViewModel(useCases)
+    }
+
     // @Test
     // fun `When I test a flow, I will do something like this`() = runTest {
     //     val viewModel = mockk<TaskViewModel>()

@@ -31,6 +31,7 @@ import io.lb.lbtasks.core.presentation.navigation.MainScreens
 import io.lb.lbtasks.core.util.TASK
 import io.lb.lbtasks.core.util.showToast
 import io.lb.lbtasks.sign_in.presentation.SignInScreen
+import io.lb.lbtasks.sign_in.presentation.sing_in.SignInEvent
 import io.lb.lbtasks.sign_in.presentation.sing_in.SignInViewModel
 import io.lb.lbtasks.task.domain.model.Task
 import io.lb.lbtasks.task.presentation.details.TaskDetailsEvent
@@ -71,7 +72,7 @@ class MainActivity : ComponentActivity() {
 
                     var startDestination = MainScreens.SignInScreen.name
 
-                    signInViewModel.getSignedInUser()?.let {
+                    signInViewModel.currentUser?.let {
                         startDestination = MainScreens.TaskScreen.name
                         taskViewModel.userData = it
                         taskDetailsViewModel.userData = it
@@ -86,7 +87,9 @@ class MainActivity : ComponentActivity() {
                                 contract = ActivityResultContracts.StartIntentSenderForResult(),
                                 onResult = { result ->
                                     if (result.resultCode == RESULT_OK) {
-                                        signInViewModel.signInWithGoogle(result.data)
+                                        signInViewModel.onEvent(
+                                            SignInEvent.RequestSignInWithGoogle(result.data)
+                                        )
                                     }
                                 }
                             )
@@ -126,23 +129,28 @@ class MainActivity : ComponentActivity() {
                                     }
                                 },
                                 onSignInClick = { email, password, repeatedPassword ->
-                                    signInViewModel.signInWithEmailAndPassword(
-                                        email = email,
-                                        password = password,
-                                        repeatedPassword = repeatedPassword
+                                    signInViewModel.onEvent(
+                                        SignInEvent.RequestSignIn(
+                                            email = email,
+                                            password = password,
+                                            repeatedPassword = repeatedPassword
+                                        )
                                     )
                                 },
                                 onLoginClick = { email, password ->
-                                    signInViewModel.loginWithEmailAndPassword(
-                                        email = email,
-                                        password = password,
+                                    signInViewModel.onEvent(
+                                        SignInEvent.RequestLogin(
+                                            email = email,
+                                            password = password,
+                                        )
                                     )
                                 }
                             )
                         }
 
                         composable(MainScreens.TaskScreen.name) {
-                            val userData = signInViewModel.getSignedInUser()
+                            signInViewModel.onEvent(SignInEvent.LoadSignedInUser)
+                            val userData = signInViewModel.currentUser
 
                             LaunchedEffect(key1 = "") {
                                 lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
@@ -156,7 +164,7 @@ class MainActivity : ComponentActivity() {
                                 state = taskState,
                                 onSignOut = {
                                     lifecycleScope.launch {
-                                        signInViewModel.logout()
+                                        signInViewModel.onEvent(SignInEvent.RequestLogout)
                                         taskViewModel.clear()
                                         applicationContext.showToast(R.string.signed_out)
                                         navController.navigate(MainScreens.SignInScreen.name) {

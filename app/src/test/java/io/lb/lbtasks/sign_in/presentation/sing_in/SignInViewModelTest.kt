@@ -1,6 +1,5 @@
 package io.lb.lbtasks.sign_in.presentation.sing_in
 
-import androidx.compose.runtime.collectAsState
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -46,60 +45,67 @@ internal class SignInViewModelTest {
         )
         viewModel = SignInViewModel(useCases)
     }
+
     @Test
     fun `Getting signed in user, returns null`() = runTest {
-        val result = viewModel.getSignedInUser()
+        viewModel.onEvent(SignInEvent.LoadSignedInUser)
         advanceUntilIdle()
 
-        assertThat(result).isNull()
+        assertThat(viewModel.currentUser).isNull()
     }
 
     @Test
     fun `Getting signed in user after a login, returns the user`() = runTest {
-        viewModel.loginWithEmailAndPassword(
-            "fellow@user.com",
-            "password"
+        viewModel.onEvent(
+            SignInEvent.RequestLogin(
+                "fellow@user.com",
+                "password"
+            )
         )
         advanceUntilIdle()
 
-        val result = viewModel.getSignedInUser()
+        viewModel.onEvent(SignInEvent.LoadSignedInUser)
         advanceUntilIdle()
 
-        assertThat(result).isEqualTo(
+        assertThat(viewModel.currentUser).isEqualTo(
             userData()
         )
     }
 
     @Test
     fun `Logging out right after logging in, returns null`() = runTest {
-        viewModel.loginWithEmailAndPassword(
-            "fellow@user.com",
-            "password"
+        viewModel.onEvent(
+            SignInEvent.RequestLogin(
+                "fellow@user.com",
+                "password"
+            )
         )
         advanceUntilIdle()
 
-        viewModel.logout()
+        viewModel.onEvent(SignInEvent.RequestLogout)
         advanceUntilIdle()
 
-        val result = viewModel.getSignedInUser()
+        viewModel.onEvent(SignInEvent.LoadSignedInUser)
         advanceUntilIdle()
 
-        assertThat(result).isNull()
+        assertThat(viewModel.currentUser).isNull()
     }
 
     @Test
     fun `Getting signed in user after a sign in, returns the user`() = runTest {
-        viewModel.signInWithEmailAndPassword(
-            "fellow@user.com",
-            "password",
-            "password"
+        viewModel.onEvent(
+            SignInEvent.RequestSignIn(
+                "fellow@user.com",
+                "password",
+                "password"
+            )
         )
         advanceUntilIdle()
 
-        val result = viewModel.getSignedInUser()
+        viewModel.onEvent(SignInEvent.LoadSignedInUser)
         advanceUntilIdle()
 
-        assertThat(result).isEqualTo(
+        assertThat(viewModel.currentUser).isEqualTo(
             userData().copy(
                 userId = "randomNewUserId"
             )
@@ -113,10 +119,12 @@ internal class SignInViewModelTest {
             assertThat(emission1.isSignInSuccessful).isFalse()
             assertThat(emission1.signInError).isNull()
 
-            viewModel.signInWithEmailAndPassword(
-                "fellow@user.com",
-                "password",
-                "password"
+            viewModel.onEvent(
+                SignInEvent.RequestSignIn(
+                    "fellow@user.com",
+                    "password",
+                    "password"
+                )
             )
 
             val emission2 = awaitItem()
@@ -132,10 +140,12 @@ internal class SignInViewModelTest {
             assertThat(emission1.isSignInSuccessful).isFalse()
             assertThat(emission1.signInError).isNull()
 
-            viewModel.signInWithEmailAndPassword(
-                "fellow@user.com",
-                "",
-                "password"
+            viewModel.onEvent(
+                SignInEvent.RequestSignIn(
+                    "fellow@user.com",
+                    "",
+                    "password"
+                )
             )
 
             val emission2 = awaitItem()
@@ -147,10 +157,12 @@ internal class SignInViewModelTest {
     @Test
     fun `Signing in with no password, shows toast`() = runTest {
         viewModel.eventFlow.test {
-            viewModel.signInWithEmailAndPassword(
-                "fellow@user.com",
-                "",
-                "password"
+            viewModel.onEvent(
+                SignInEvent.RequestSignIn(
+                    "fellow@user.com",
+                    "",
+                    "password"
+                )
             )
 
             val emission = awaitItem()
@@ -170,10 +182,12 @@ internal class SignInViewModelTest {
             assertThat(emission1.isSignInSuccessful).isFalse()
             assertThat(emission1.signInError).isNull()
 
-            viewModel.signInWithEmailAndPassword(
-                "fellow@user.com",
-                "password",
-                "wrongPassword"
+            viewModel.onEvent(
+                SignInEvent.RequestSignIn(
+                    "fellow@user.com",
+                    "password",
+                    "wrongPassword"
+                )
             )
 
             val emission2 = awaitItem()
@@ -185,10 +199,12 @@ internal class SignInViewModelTest {
     @Test
     fun `Signing in with password not matching, shows toast`() = runTest {
         viewModel.eventFlow.test {
-            viewModel.signInWithEmailAndPassword(
-                "fellow@user.com",
-                "password",
-                "wrongPassword"
+            viewModel.onEvent(
+                SignInEvent.RequestSignIn(
+                    "fellow@user.com",
+                    "password",
+                    "wrongPassword"
+                )
             )
 
             val emission = awaitItem()
@@ -208,10 +224,12 @@ internal class SignInViewModelTest {
             assertThat(emission1.isSignInSuccessful).isFalse()
             assertThat(emission1.signInError).isNull()
 
-            viewModel.signInWithEmailAndPassword(
-                "",
-                "password",
-                "password"
+            viewModel.onEvent(
+                SignInEvent.RequestSignIn(
+                    "",
+                    "password",
+                    "password"
+                )
             )
 
             val emission2 = awaitItem()
@@ -223,10 +241,12 @@ internal class SignInViewModelTest {
     @Test
     fun `Signing in with no email, shows toast`() = runTest {
         viewModel.eventFlow.test {
-            viewModel.signInWithEmailAndPassword(
-                "",
-                "password",
-                "password"
+            viewModel.onEvent(
+                SignInEvent.RequestSignIn(
+                    "",
+                    "password",
+                    "password"
+                )
             )
 
             val emission = awaitItem()
@@ -245,10 +265,12 @@ internal class SignInViewModelTest {
             assertThat(emission1.isSignInSuccessful).isFalse()
             assertThat(emission1.signInError).isNull()
 
-            viewModel.signInWithEmailAndPassword(
-                "fellowuser.com",
-                "password",
-                "password"
+            viewModel.onEvent(
+                SignInEvent.RequestSignIn(
+                    "fellowuser.com",
+                    "password",
+                    "password"
+                )
             )
 
             val emission2 = awaitItem()
@@ -260,10 +282,12 @@ internal class SignInViewModelTest {
     @Test
     fun `Signing in with invalid email, shows toast`() = runTest {
         viewModel.eventFlow.test {
-            viewModel.signInWithEmailAndPassword(
-                "fellowuser.com",
-                "password",
-                "password"
+            viewModel.onEvent(
+                SignInEvent.RequestSignIn(
+                    "fellowuser.com",
+                    "password",
+                    "password"
+                )
             )
 
             val emission = awaitItem()
@@ -282,9 +306,11 @@ internal class SignInViewModelTest {
             assertThat(emission1.isSignInSuccessful).isFalse()
             assertThat(emission1.signInError).isNull()
 
-            viewModel.loginWithEmailAndPassword(
-                "fellow@user.com",
-                "password",
+            viewModel.onEvent(
+                SignInEvent.RequestLogin(
+                    "fellow@user.com",
+                    "password",
+                )
             )
 
             val emission2 = awaitItem()
@@ -300,9 +326,11 @@ internal class SignInViewModelTest {
             assertThat(emission1.isSignInSuccessful).isFalse()
             assertThat(emission1.signInError).isNull()
 
-            viewModel.loginWithEmailAndPassword(
-                "fellow@user.com",
-                "",
+            viewModel.onEvent(
+                SignInEvent.RequestLogin(
+                    "fellow@user.com",
+                    "",
+                )
             )
 
             val emission2 = awaitItem()
@@ -314,9 +342,11 @@ internal class SignInViewModelTest {
     @Test
     fun `Logging in with no password, shows toast`() = runTest {
         viewModel.eventFlow.test {
-            viewModel.loginWithEmailAndPassword(
-                "fellow@user.com",
-                "",
+            viewModel.onEvent(
+                SignInEvent.RequestLogin(
+                    "fellow@user.com",
+                    "",
+                )
             )
 
             val emission = awaitItem()
@@ -336,9 +366,11 @@ internal class SignInViewModelTest {
             assertThat(emission1.isSignInSuccessful).isFalse()
             assertThat(emission1.signInError).isNull()
 
-            viewModel.loginWithEmailAndPassword(
-                "",
-                "password",
+            viewModel.onEvent(
+                SignInEvent.RequestLogin(
+                    "",
+                    "password",
+                )
             )
 
             val emission2 = awaitItem()
@@ -350,9 +382,11 @@ internal class SignInViewModelTest {
     @Test
     fun `Logging in with no email, shows toast`() = runTest {
         viewModel.eventFlow.test {
-            viewModel.loginWithEmailAndPassword(
-                "",
-                "password",
+            viewModel.onEvent(
+                SignInEvent.RequestLogin(
+                    "",
+                    "password",
+                )
             )
 
             val emission = awaitItem()
@@ -371,9 +405,11 @@ internal class SignInViewModelTest {
             assertThat(emission1.isSignInSuccessful).isFalse()
             assertThat(emission1.signInError).isNull()
 
-            viewModel.loginWithEmailAndPassword(
-                "fellowuser.com",
-                "password",
+            viewModel.onEvent(
+                SignInEvent.RequestLogin(
+                    "fellowuser.com",
+                    "password",
+                )
             )
 
             val emission2 = awaitItem()
@@ -385,9 +421,11 @@ internal class SignInViewModelTest {
     @Test
     fun `Logging in with invalid email, shows toast`() = runTest {
         viewModel.eventFlow.test {
-            viewModel.loginWithEmailAndPassword(
-                "fellowuser.com",
-                "password",
+            viewModel.onEvent(
+                SignInEvent.RequestLogin(
+                    "fellowuser.com",
+                    "password",
+                )
             )
 
             val emission = awaitItem()
@@ -401,9 +439,11 @@ internal class SignInViewModelTest {
 
     @Test
     fun `Resetting state, makes the state brand new`() = runTest {
-        viewModel.loginWithEmailAndPassword(
-            "fellow@user.com",
-            "password",
+        viewModel.onEvent(
+            SignInEvent.RequestLogin(
+                "fellow@user.com",
+                "password",
+            )
         )
         advanceUntilIdle()
 
