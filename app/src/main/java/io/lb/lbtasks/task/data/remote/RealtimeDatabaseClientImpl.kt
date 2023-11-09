@@ -10,16 +10,9 @@ import io.lb.lbtasks.task.domain.model.Task
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
-class RealtimeDatabaseClientImpl : RealtimeDatabaseClient {
-    private var database: DatabaseReference
-
-    init {
-        Firebase.database.run {
-            setPersistenceEnabled(true)
-            database = getReference(TASK)
-        }
-    }
-
+class RealtimeDatabaseClientImpl(
+    private val database: DatabaseReference
+) : RealtimeDatabaseClient {
     override suspend fun insertTask(user: UserData, task: Task) {
         database.child(user.userId ?: return)
             .child(task.uuid)
