@@ -3,6 +3,7 @@ package io.lb.lbtasks.sign_in.domain.use_cases
 import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import io.lb.lbtasks.sign_in.data.repository.FakeSignInRepository
 import io.lb.lbtasks.sign_in.domain.repository.SignInRepository
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach

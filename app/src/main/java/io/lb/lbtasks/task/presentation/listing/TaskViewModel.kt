@@ -12,8 +12,11 @@ import io.lb.lbtasks.task.domain.model.Task
 import io.lb.lbtasks.task.domain.use_cases.TaskUseCases
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,8 +24,8 @@ import javax.inject.Inject
 class TaskViewModel @Inject constructor(
     private val useCases: TaskUseCases
 ) : ViewModel() {
-    private val _state = mutableStateOf(TaskState())
-    val state: State<TaskState> = _state
+    private val _state = MutableStateFlow(TaskState())
+    val state: StateFlow<TaskState> = _state
 
     private val tasks = mutableListOf<Task>()
     private var searchJob: Job? = null
@@ -41,9 +44,11 @@ class TaskViewModel @Inject constructor(
                     }?.let {
                         delay(300L)
                     }
-                    _state.value = state.value.copy(
-                        tasks = tasks.filterBy(event.filter),
-                    )
+                    _state.update {
+                        state.value.copy(
+                            tasks = tasks.filterBy(event.filter),
+                        )
+                    }
                 }
             }
             is TaskEvent.RequestDelete -> {
@@ -67,18 +72,22 @@ class TaskViewModel @Inject constructor(
                 is Resource.Success -> {
                     tasks.clear()
 
-                    result.data?.let {
-                        tasks.addAll(it)
+                    result.data?.let { tasks ->
+                        this.tasks.addAll(tasks)
 
-                        _state.value = state.value.copy(
-                            tasks = it,
-                        )
+                        _state.update {
+                            it.copy(
+                                tasks = tasks,
+                            )
+                        }
                     }
                 }
                 is Resource.Loading -> {
-                    _state.value = state.value.copy(
-                        loading = result.isLoading,
-                    )
+                    _state.update {
+                        it.copy(
+                            loading = result.isLoading,
+                        )
+                    }
                 }
             }
         }.launchIn(viewModelScope)
@@ -112,6 +121,6 @@ class TaskViewModel @Inject constructor(
     }
 
     fun clear() {
-        _state.value = TaskState()
+        _state.update { TaskState() }
     }
 }

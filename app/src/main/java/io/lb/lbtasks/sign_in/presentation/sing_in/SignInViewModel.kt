@@ -35,18 +35,17 @@ class SignInViewModel @Inject constructor(
         repeatedPassword: String
     ) {
         viewModelScope.launch {
-            try {
+            val result = try {
                 val signInResult = useCases.signInWithEmailAndPasswordUseCase(
                     email,
                     password,
                     repeatedPassword
                 )
-                onSignInResult(signInResult)
+                signInResult
             } catch (e: Exception) {
-                e.message?.let {
-                    _eventFlow.emit(UiEvent.ShowToast(it))
-                }
+                SignInResult(data = null, errorMessage = e.message)
             }
+            onSignInResult(result)
         }
     }
 
@@ -55,17 +54,16 @@ class SignInViewModel @Inject constructor(
         password: String,
     ) {
         viewModelScope.launch {
-            try {
+            val result = try {
                 val signInResult = useCases.loginWithEmailAndPasswordUseCase(
                     email,
                     password
                 )
-                onSignInResult(signInResult)
+                signInResult
             } catch (e: Exception) {
-                e.message?.let {
-                    _eventFlow.emit(UiEvent.ShowToast(it))
-                }
+                SignInResult(data = null, errorMessage = e.message)
             }
+            onSignInResult(result)
         }
     }
 
@@ -77,16 +75,15 @@ class SignInViewModel @Inject constructor(
 
     fun signInWithGoogle(data: Intent?) {
         viewModelScope.launch {
-            try {
+            val result = try {
                 val signInResult = useCases.signInWithGoogleUseCase(
                     data ?: return@launch
                 )
-                onSignInResult(signInResult)
+                signInResult
             } catch (e: Exception) {
-                e.message?.let {
-                    _eventFlow.emit(UiEvent.ShowToast(it))
-                }
+               SignInResult(data = null, errorMessage = e.message)
             }
+            onSignInResult(result)
         }
     }
 
@@ -95,6 +92,14 @@ class SignInViewModel @Inject constructor(
             isSignInSuccessful = result.data != null,
             signInError = result.errorMessage
         )
+
+        result.errorMessage?.takeIf {
+            it.isNotBlank()
+        }?.let {
+            viewModelScope.launch {
+                _eventFlow.emit(UiEvent.ShowToast(it))
+            }
+        }
     }
 
     fun logout() {

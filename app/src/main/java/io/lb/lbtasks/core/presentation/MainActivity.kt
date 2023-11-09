@@ -13,6 +13,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -63,7 +64,7 @@ class MainActivity : ComponentActivity() {
                     val signInState = signInViewModel.state.value
 
                     val taskViewModel = hiltViewModel<TaskViewModel>()
-                    val taskState = taskViewModel.state.value
+                    val taskState = taskViewModel.state.collectAsState().value
 
                     val taskDetailsViewModel = hiltViewModel<TaskDetailsViewModel>()
                     val taskDetailsState = taskDetailsViewModel.state.value
