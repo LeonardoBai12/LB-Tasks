@@ -18,6 +18,9 @@ class InsertTaskUseCase(
         if (title.isBlank())
             throw Exception("You can't save without a title")
 
+        if (taskType.isBlank())
+            throw Exception("You can't save without a task type")
+
         repository.insertTask(
             userData = userData,
             task = Task(

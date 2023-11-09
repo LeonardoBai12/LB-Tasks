@@ -8,7 +8,6 @@ import assertk.assertions.isFalse
 import assertk.assertions.isNull
 import assertk.assertions.isNullOrEmpty
 import assertk.assertions.isTrue
-import io.lb.lbtasks.sign_in.data.repository.FakeGoogleAuthUiClient
 import io.lb.lbtasks.sign_in.data.repository.FakeSignInRepository
 import io.lb.lbtasks.sign_in.domain.repository.SignInRepository
 import io.lb.lbtasks.sign_in.domain.use_cases.GetSignedInUserUseCase
@@ -19,15 +18,10 @@ import io.lb.lbtasks.sign_in.domain.use_cases.SignInUseCases
 import io.lb.lbtasks.sign_in.domain.use_cases.SignInWithEmailAndPasswordUseCase
 import io.lb.lbtasks.sign_in.domain.use_cases.SignInWithGoogleUseCase
 import io.lb.lbtasks.sign_in.domain.use_cases.userData
-import io.lb.lbtasks.sign_in.util.MainCoroutineExtension
-import kotlinx.coroutines.Dispatchers
+import io.lb.lbtasks.util.MainCoroutineExtension
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

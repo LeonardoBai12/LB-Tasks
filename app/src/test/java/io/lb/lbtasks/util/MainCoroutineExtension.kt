@@ -1,4 +1,4 @@
-package io.lb.lbtasks.sign_in.util
+package io.lb.lbtasks.util
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

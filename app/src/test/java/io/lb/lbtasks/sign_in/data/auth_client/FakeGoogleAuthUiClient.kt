@@ -1,4 +1,4 @@
-package io.lb.lbtasks.sign_in.data.repository
+package io.lb.lbtasks.sign_in.data.auth_client
 
 import android.content.Intent
 import android.content.IntentSender
