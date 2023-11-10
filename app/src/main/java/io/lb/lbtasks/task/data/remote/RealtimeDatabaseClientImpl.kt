@@ -1,10 +1,7 @@
 package io.lb.lbtasks.task.data.remote
 
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import io.lb.lbtasks.core.util.Resource
-import io.lb.lbtasks.core.util.TASK
 import io.lb.lbtasks.sign_in.domain.model.UserData
 import io.lb.lbtasks.task.domain.model.Task
 import kotlinx.coroutines.flow.flow

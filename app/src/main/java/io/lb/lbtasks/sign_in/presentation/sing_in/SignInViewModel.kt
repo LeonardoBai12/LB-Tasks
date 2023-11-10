@@ -118,7 +118,7 @@ class SignInViewModel @Inject constructor(
                 )
                 signInResult
             } catch (e: Exception) {
-               SignInResult(data = null, errorMessage = e.message)
+                SignInResult(data = null, errorMessage = e.message)
             }
             onSignInResult(result)
         }
