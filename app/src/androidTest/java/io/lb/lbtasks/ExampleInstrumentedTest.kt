@@ -1,21 +1,18 @@
 package io.lb.lbtasks
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
+import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
-import org.junit.runner.RunWith
 
 /**
  * Instrumented test, which will execute on an Android device.
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-@RunWith(AndroidJUnit4::class)
-class ExampleInstrumentedTest {
+@HiltAndroidTest
+class ExampleInstrumentedTest : LbAndroidTest() {
     @Test
     fun useAppContext() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("io.lb.lbtasks", appContext.packageName)
+        assertEquals("io.lb.lbtasks", context.packageName)
     }
 }

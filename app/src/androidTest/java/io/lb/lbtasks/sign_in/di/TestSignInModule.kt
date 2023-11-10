@@ -8,6 +8,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.testing.TestInstallIn
 import io.lb.lbtasks.sign_in.data.auth_client.GoogleAuthClient
 import io.lb.lbtasks.sign_in.data.auth_client.GoogleAuthClientImpl
 import io.lb.lbtasks.sign_in.data.repository.SignInRepositoryImpl
@@ -19,10 +20,14 @@ import io.lb.lbtasks.sign_in.domain.use_cases.SignInUseCase
 import io.lb.lbtasks.sign_in.domain.use_cases.SignInUseCases
 import io.lb.lbtasks.sign_in.domain.use_cases.SignInWithEmailAndPasswordUseCase
 import io.lb.lbtasks.sign_in.domain.use_cases.SignInWithGoogleUseCase
+import io.lb.lbtasks.task.di.TaskModule
 
 @Module
-@InstallIn(ViewModelComponent::class)
-object SignInModule {
+@TestInstallIn(
+    components = [ViewModelComponent::class],
+    replaces = [SignInModule::class]
+)
+object TestSignInModule {
     @Provides
     fun providesSignInRepository(googleAuthUiClient: GoogleAuthClient): SignInRepository {
         return SignInRepositoryImpl(googleAuthUiClient)

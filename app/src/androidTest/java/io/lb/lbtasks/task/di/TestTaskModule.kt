@@ -4,7 +4,11 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.components.SingletonComponent
+import dagger.hilt.testing.TestInstallIn
+import io.lb.lbtasks.core.di.AppModule
 import io.lb.lbtasks.task.data.remote.RealtimeDatabaseClient
+import io.lb.lbtasks.task.data.remote.RealtimeDatabaseClientImpl
 import io.lb.lbtasks.task.data.repository.TaskRepositoryImpl
 import io.lb.lbtasks.task.domain.repository.TaskRepository
 import io.lb.lbtasks.task.domain.use_cases.DeleteTaskUseCase
@@ -14,8 +18,11 @@ import io.lb.lbtasks.task.domain.use_cases.TaskUseCases
 import io.lb.lbtasks.task.domain.use_cases.UpdateTaskUseCase
 
 @Module
-@InstallIn(ViewModelComponent::class)
-object TaskModule {
+@TestInstallIn(
+    components = [ViewModelComponent::class],
+    replaces = [TaskModule::class]
+)
+object TestTaskModule {
     @Provides
     fun providesTaskRepository(
         realtimeDatabaseClient: RealtimeDatabaseClient,
