@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
                     val taskState = taskViewModel.state.collectAsState().value
 
                     val taskDetailsViewModel = hiltViewModel<TaskDetailsViewModel>()
-                    val taskDetailsState = taskDetailsViewModel.state.value
+                    val taskDetailsState = taskDetailsViewModel.state.collectAsState().value
 
                     var startDestination = MainScreens.SignInScreen.name
 
