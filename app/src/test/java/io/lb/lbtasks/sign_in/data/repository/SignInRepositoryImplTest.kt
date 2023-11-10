@@ -3,9 +3,10 @@ package io.lb.lbtasks.sign_in.data.repository
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
+import io.lb.lbtasks.sign_in.data.auth_client.FakeGoogleAuthUiClient
+import io.lb.lbtasks.sign_in.data.auth_client.FakeGoogleAuthUiClient.Companion.OLD_USER_EMAIL
+import io.lb.lbtasks.sign_in.data.auth_client.FakeGoogleAuthUiClient.Companion.OLD_USER_PASSWORD
 import io.lb.lbtasks.sign_in.data.auth_client.GoogleAuthClient
-import io.lb.lbtasks.sign_in.data.repository.FakeGoogleAuthUiClient.Companion.OLD_USER_EMAIL
-import io.lb.lbtasks.sign_in.data.repository.FakeGoogleAuthUiClient.Companion.OLD_USER_PASSWORD
 import io.lb.lbtasks.sign_in.domain.repository.SignInRepository
 import io.lb.lbtasks.sign_in.domain.use_cases.userData
 import io.mockk.mockk
@@ -13,7 +14,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-class SignInRepositoryImplTest {
+internal class SignInRepositoryImplTest {
     private lateinit var authClient: GoogleAuthClient
     private lateinit var repository: SignInRepository
 

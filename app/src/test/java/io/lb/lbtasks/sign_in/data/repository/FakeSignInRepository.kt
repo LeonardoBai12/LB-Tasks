@@ -1,10 +1,11 @@
-package io.lb.lbtasks.sign_in.domain.use_cases
+package io.lb.lbtasks.sign_in.data.repository
 
 import android.content.Intent
 import android.content.IntentSender
 import io.lb.lbtasks.sign_in.domain.model.SignInResult
 import io.lb.lbtasks.sign_in.domain.model.UserData
 import io.lb.lbtasks.sign_in.domain.repository.SignInRepository
+import io.lb.lbtasks.sign_in.domain.use_cases.userData
 import io.mockk.mockk
 
 class FakeSignInRepository : SignInRepository {

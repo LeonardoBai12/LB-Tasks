@@ -1,13 +1,13 @@
 package io.lb.lbtasks.task.presentation.details
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.lb.lbtasks.sign_in.domain.model.UserData
 import io.lb.lbtasks.task.domain.use_cases.TaskUseCases
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -17,8 +17,8 @@ import javax.inject.Inject
 class TaskDetailsViewModel @Inject constructor(
     private val useCases: TaskUseCases,
 ) : ViewModel() {
-    private val _state = mutableStateOf(TaskDetailsState())
-    val state: State<TaskDetailsState> = _state
+    private val _state = MutableStateFlow(TaskDetailsState())
+    val state: StateFlow<TaskDetailsState> = _state
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()

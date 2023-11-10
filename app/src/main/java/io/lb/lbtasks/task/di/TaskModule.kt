@@ -4,7 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import io.lb.lbtasks.task.data.remote.RealtimeDatabaseClient
+import io.lb.lbtasks.task.data.remote.RealtimeDatabaseClientImpl
 import io.lb.lbtasks.task.data.repository.TaskRepositoryImpl
 import io.lb.lbtasks.task.domain.repository.TaskRepository
 import io.lb.lbtasks.task.domain.use_cases.DeleteTaskUseCase
@@ -18,7 +18,7 @@ import io.lb.lbtasks.task.domain.use_cases.UpdateTaskUseCase
 object TaskModule {
     @Provides
     fun providesTaskRepository(
-        realtimeDatabaseClient: RealtimeDatabaseClient,
+        realtimeDatabaseClient: RealtimeDatabaseClientImpl,
     ): TaskRepository {
         return TaskRepositoryImpl(realtimeDatabaseClient)
     }
