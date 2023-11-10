@@ -2,19 +2,13 @@ package io.lb.lbtasks.task.presentation.details
 
 import app.cash.turbine.test
 import assertk.assertThat
-import assertk.assertions.hasSize
-import assertk.assertions.hasToString
 import assertk.assertions.isEqualTo
 import io.lb.lbtasks.sign_in.domain.use_cases.userData
 import io.lb.lbtasks.task.domain.use_cases.TaskUseCases
 import io.lb.lbtasks.task.domain.use_cases.task
 import io.lb.lbtasks.task.presentation.fakeUseCases
 import io.lb.lbtasks.util.MainCoroutineExtension
-import io.mockk.coVerify
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
