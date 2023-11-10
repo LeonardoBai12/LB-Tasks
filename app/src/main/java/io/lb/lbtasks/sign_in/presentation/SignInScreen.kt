@@ -15,6 +15,7 @@ import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -29,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.lb.lbtasks.R
 import io.lb.lbtasks.core.presentation.widgets.DefaultTextButton
@@ -109,13 +111,14 @@ private fun LoginButtonsColumn(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(60.dp),
+            .padding(36.dp),
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         DefaultTextButton(
-            modifier = Modifier.fillMaxWidth()
-                .padding(bottom = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
             text = stringResource(id = R.string.login),
             onClick = {
                 coroutineScope.launch {
@@ -126,8 +129,8 @@ private fun LoginButtonsColumn(
         )
 
         DefaultTextButton(
-            modifier = Modifier.fillMaxWidth()
-                .padding(bottom = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth(),
             text = stringResource(id = R.string.sign_in),
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
             contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -139,8 +142,15 @@ private fun LoginButtonsColumn(
             },
         )
 
+        Text(
+            modifier = Modifier.padding(top = 4.dp, bottom = 8.dp),
+            text = "or",
+            fontWeight = FontWeight.SemiBold
+        )
+
         DefaultTextButton(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .shadow(2.dp, shape = RoundedCornerShape(36.dp)),
             text = stringResource(id = R.string.continue_with_google),
             icon = painterResource(id = R.drawable.ic_google),
