@@ -6,7 +6,6 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
 import assertk.assertions.isNullOrEmpty
-import io.lb.lbtasks.core.util.Resource
 import io.lb.lbtasks.sign_in.domain.use_cases.userData
 import io.lb.lbtasks.task.data.repository.FakeTaskRepository
 import io.lb.lbtasks.task.domain.model.Task
