@@ -8,10 +8,8 @@ import assertk.assertions.isNull
 import assertk.assertions.isNullOrEmpty
 import io.lb.lbtasks.sign_in.domain.use_cases.userData
 import io.lb.lbtasks.task.data.repository.FakeTaskRepository
-import io.lb.lbtasks.task.domain.model.Task
 import io.lb.lbtasks.task.domain.model.TaskType
 import io.lb.lbtasks.task.domain.repository.TaskRepository
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

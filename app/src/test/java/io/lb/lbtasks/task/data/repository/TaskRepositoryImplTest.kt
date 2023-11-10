@@ -5,7 +5,6 @@ import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
-import assertk.assertions.isNull
 import assertk.assertions.isNullOrEmpty
 import io.lb.lbtasks.sign_in.domain.use_cases.userData
 import io.lb.lbtasks.task.data.remote.FakeRealtimeDatabaseClient
