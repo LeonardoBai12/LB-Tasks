@@ -48,7 +48,6 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterial3Api
 @Composable
 fun SignInScreen(
-    state: SignInState,
     onSignInWithGoogleClick: () -> Unit,
     onSignInClick: (String, String, String) -> Unit,
     onLoginClick: (String, String) -> Unit,
@@ -60,14 +59,6 @@ fun SignInScreen(
     val coroutineScope = rememberCoroutineScope()
     val isLogin = remember {
         mutableStateOf(true)
-    }
-
-    val context = LocalContext.current
-
-    LaunchedEffect(key1 = state.signInError) {
-        state.signInError?.let { error ->
-            context.showToast(error)
-        }
     }
 
     HomeLoginBackground()

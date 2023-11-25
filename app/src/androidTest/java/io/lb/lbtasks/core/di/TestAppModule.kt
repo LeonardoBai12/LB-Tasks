@@ -11,7 +11,10 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
+import io.lb.lbtasks.core.util.FakeToaster
+import io.lb.lbtasks.core.util.LBTasksToaster
 import io.lb.lbtasks.core.util.TASK_TEST
+import io.lb.lbtasks.core.util.Toaster
 import io.lb.lbtasks.sign_in.data.auth_client.GoogleAuthClient
 import io.lb.lbtasks.sign_in.data.auth_client.GoogleAuthClientImpl
 import io.lb.lbtasks.task.data.remote.RealtimeDatabaseClient
@@ -49,5 +52,11 @@ object TestAppModule {
         }.getReference(TASK_TEST)
 
         return RealtimeDatabaseClientImpl(database)
+    }
+
+    @Provides
+    @Singleton
+    fun providesToaster(): Toaster {
+        return FakeToaster()
     }
 }

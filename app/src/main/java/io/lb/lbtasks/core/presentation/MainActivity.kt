@@ -29,6 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.lb.lbtasks.R
 import io.lb.lbtasks.core.presentation.navigation.MainScreens
 import io.lb.lbtasks.core.util.TASK
+import io.lb.lbtasks.core.util.Toaster
 import io.lb.lbtasks.core.util.showToast
 import io.lb.lbtasks.sign_in.presentation.SignInScreen
 import io.lb.lbtasks.sign_in.presentation.sing_in.SignInEvent
@@ -43,12 +44,16 @@ import io.lb.lbtasks.task.presentation.listing.TasksScreen
 import io.lb.lbtasks.ui.theme.LBTasksTheme
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 @ExperimentalMaterial3Api
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var toaster: Toaster
+
     @ExperimentalMaterialApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,7 +101,7 @@ class MainActivity : ComponentActivity() {
 
                             LaunchedEffect(key1 = signInState.isSignInSuccessful) {
                                 if (signInState.isSignInSuccessful) {
-                                    applicationContext.showToast(R.string.sign_in_successful)
+                                    toaster.showToast(R.string.sign_in_successful)
 
                                     navController.navigate(MainScreens.TaskScreen.name)
                                     signInViewModel.resetState()
@@ -107,14 +112,13 @@ class MainActivity : ComponentActivity() {
                                 signInViewModel.eventFlow.collectLatest { event ->
                                     when (event) {
                                         is SignInViewModel.UiEvent.ShowToast -> {
-                                            applicationContext.showToast(event.message)
+                                            toaster.showToast(event.message)
                                         }
                                     }
                                 }
                             }
 
                             SignInScreen(
-                                state = signInState,
                                 onSignInWithGoogleClick = {
                                     lifecycleScope.launch {
                                         signInViewModel.signIn()?.let {
@@ -123,7 +127,7 @@ class MainActivity : ComponentActivity() {
                                                     it
                                                 ).build()
                                             )
-                                        } ?: applicationContext.showToast(
+                                        } ?: toaster.showToast(
                                             R.string.something_went_wrong
                                         )
                                     }
@@ -166,7 +170,7 @@ class MainActivity : ComponentActivity() {
                                     lifecycleScope.launch {
                                         signInViewModel.onEvent(SignInEvent.RequestLogout)
                                         taskViewModel.clearState()
-                                        applicationContext.showToast(R.string.signed_out)
+                                        toaster.showToast(R.string.signed_out)
                                         navController.navigate(MainScreens.SignInScreen.name) {
                                             popUpTo(MainScreens.TaskScreen.name) {
                                                 inclusive = true
@@ -201,7 +205,7 @@ class MainActivity : ComponentActivity() {
                                             navController.navigateUp()
                                         }
                                         is TaskDetailsViewModel.UiEvent.ShowToast -> {
-                                            applicationContext.showToast(event.message)
+                                            toaster.showToast(event.message)
                                         }
                                     }
                                 }
