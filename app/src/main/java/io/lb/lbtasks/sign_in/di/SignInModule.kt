@@ -1,15 +1,10 @@
 package io.lb.lbtasks.sign_in.di
 
-import android.app.Application
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import io.lb.lbtasks.sign_in.data.auth_client.GoogleAuthClient
-import io.lb.lbtasks.sign_in.data.auth_client.GoogleAuthClientImpl
 import io.lb.lbtasks.sign_in.data.repository.SignInRepositoryImpl
 import io.lb.lbtasks.sign_in.domain.repository.SignInRepository
 import io.lb.lbtasks.sign_in.domain.use_cases.GetSignedInUserUseCase

@@ -11,9 +11,9 @@ class FakeToaster : Toaster {
 }
 
 fun pretendToShowAToast(message: String) {
-
+    println(message)
 }
 
 fun pretendToShowAToastWithResId(resId: Int) {
-
+    println(resId)
 }

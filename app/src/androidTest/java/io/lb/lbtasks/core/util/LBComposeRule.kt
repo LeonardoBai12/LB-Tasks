@@ -1,4 +1,6 @@
-@file:OptIn(ExperimentalAnimationApi::class, ExperimentalComposeUiApi::class,
+@file:OptIn(
+    ExperimentalAnimationApi::class,
+    ExperimentalComposeUiApi::class,
     ExperimentalMaterial3Api::class
 )
 

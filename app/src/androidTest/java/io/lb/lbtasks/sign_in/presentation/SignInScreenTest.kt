@@ -14,6 +14,7 @@ import io.lb.lbtasks.core.util.pretendToShowAToastWithResId
 import io.mockk.mockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -156,6 +157,7 @@ class SignInScreenTest : LbAndroidTest() {
             .inputRepeatedPassword("jetpackPassword")
             .clickBottomSheetSignIn()
             .clickLogout()
+            .apply { delay(500) }
             .clickHomeLogin()
             .inputEmail("jetpack@compose.com")
             .inputPassword("jetpackPassword")

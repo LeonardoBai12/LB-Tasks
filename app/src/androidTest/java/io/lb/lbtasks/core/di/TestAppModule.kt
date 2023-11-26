@@ -12,8 +12,6 @@ import dagger.Provides
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
 import io.lb.lbtasks.core.util.FakeToaster
-import io.lb.lbtasks.core.util.LBTasksToaster
-import io.lb.lbtasks.core.util.TASK
 import io.lb.lbtasks.core.util.TASK_TEST
 import io.lb.lbtasks.core.util.Toaster
 import io.lb.lbtasks.sign_in.data.auth_client.GoogleAuthClient
