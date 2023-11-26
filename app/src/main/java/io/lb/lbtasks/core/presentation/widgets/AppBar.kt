@@ -22,7 +22,7 @@ import io.lb.lbtasks.R
 
 @ExperimentalMaterial3Api
 @Composable
-fun AppBar(
+fun TaskAppBar(
     onNavigationIconClick: () -> Unit
 ) {
     TopAppBar(

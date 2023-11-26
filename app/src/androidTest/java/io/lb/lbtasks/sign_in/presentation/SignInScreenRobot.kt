@@ -5,6 +5,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasClickAction
+import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onLast
@@ -42,6 +43,26 @@ class SignInScreenRobot(
         return this
     }
 
+    fun clickLogout(): SignInScreenRobot {
+        composeRule.waitForIdle()
+
+        composeRule.onNode(
+            hasContentDescription("Toggle drawer")
+        ).assertIsDisplayed()
+            .performClick()
+
+        composeRule.waitForIdle()
+
+        composeRule.onNode(
+            hasText("Logout")
+                .and(hasClickAction())
+        ).assertIsDisplayed()
+            .performClick()
+
+        composeRule.waitForIdle()
+        return this
+    }
+
     fun clickBottomSheetSignIn(): SignInScreenRobot {
         composeRule.onAllNodes(
             hasText("Sign in")
@@ -68,7 +89,7 @@ class SignInScreenRobot(
 
     fun inputEmail(email: String): SignInScreenRobot {
         composeRule.onNode(
-            hasText("E-mail")
+            hasText("Email")
         ).assertIsDisplayed()
             .performTextInput(email)
         return this

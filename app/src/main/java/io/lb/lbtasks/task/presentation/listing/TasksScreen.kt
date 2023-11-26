@@ -49,7 +49,7 @@ import io.lb.lbtasks.core.presentation.navigation.DrawerBody
 import io.lb.lbtasks.core.presentation.navigation.DrawerHeader
 import io.lb.lbtasks.core.presentation.navigation.MainScreens
 import io.lb.lbtasks.core.presentation.navigation.MenuItem
-import io.lb.lbtasks.core.presentation.widgets.AppBar
+import io.lb.lbtasks.core.presentation.widgets.TaskAppBar
 import io.lb.lbtasks.core.util.DefaultSearchBar
 import io.lb.lbtasks.sign_in.domain.model.UserData
 import io.lb.lbtasks.task.domain.model.Task
@@ -198,7 +198,7 @@ private fun TasksScaffold(
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
-                AppBar {
+                TaskAppBar {
                     coroutineScope.launch {
                         drawerState.open()
                     }
@@ -218,7 +218,7 @@ private fun TasksScaffold(
                 ) {
                     Icon(
                         Icons.Default.Add,
-                        contentDescription = "HomeFAB",
+                        contentDescription = "Create new task",
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }

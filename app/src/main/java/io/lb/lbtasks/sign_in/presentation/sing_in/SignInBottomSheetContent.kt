@@ -106,7 +106,7 @@ private fun SignInTextFields(
                     contentDescription = "LockIcon"
                 )
             },
-            label = "E-mail",
+            label = "Email",
             onValueChange = {
                 email.value = it
             }

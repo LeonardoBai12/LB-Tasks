@@ -7,12 +7,15 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import io.lb.lbtasks.LbAndroidTest
+import io.lb.lbtasks.R
 import io.lb.lbtasks.core.presentation.MainActivity
 import io.lb.lbtasks.core.util.pretendToShowAToast
+import io.lb.lbtasks.core.util.pretendToShowAToastWithResId
 import io.mockk.mockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -26,11 +29,15 @@ class SignInScreenTest : LbAndroidTest() {
     @get:Rule
     val composeRule = createAndroidComposeRule<MainActivity>()
 
-    @Test
-    fun insertingNoEmail_showsToast() = runBlocking {
+    @Before
+    override fun setUp() {
+        super.setUp()
         mockkStatic(::pretendToShowAToast)
-        composeRule.awaitIdle()
+        composeRule.waitForIdle()
+    }
 
+    @Test
+    fun insertingNoEmailOnSignIn_showsToast() = runBlocking {
         SignInScreenRobot(composeRule)
             .clickHomeSignIn()
             .clickBottomSheetSignIn()
@@ -41,10 +48,7 @@ class SignInScreenTest : LbAndroidTest() {
     }
 
     @Test
-    fun insertingAWrongEmail_showsToast() = runBlocking {
-        mockkStatic(::pretendToShowAToast)
-        composeRule.awaitIdle()
-
+    fun insertingAWrongEmailOnSignIn_showsToast() = runBlocking {
         SignInScreenRobot(composeRule)
             .clickHomeSignIn()
             .inputEmail("jetpack-compose.com")
@@ -56,10 +60,7 @@ class SignInScreenTest : LbAndroidTest() {
     }
 
     @Test
-    fun insertingNoPassword_showsToast() = runBlocking {
-        mockkStatic(::pretendToShowAToast)
-        composeRule.awaitIdle()
-
+    fun insertingNoPasswordOnSignIn_showsToast() = runBlocking {
         SignInScreenRobot(composeRule)
             .clickHomeSignIn()
             .inputEmail("jetpack@compose.com")
@@ -71,10 +72,7 @@ class SignInScreenTest : LbAndroidTest() {
     }
 
     @Test
-    fun insertingOnePasswordOnly_showsToast() = runBlocking {
-        mockkStatic(::pretendToShowAToast)
-        composeRule.awaitIdle()
-
+    fun insertingOnePasswordOnlyOnSignIn_showsToast() = runBlocking {
         SignInScreenRobot(composeRule)
             .clickHomeSignIn()
             .inputEmail("jetpack@compose.com")
@@ -87,10 +85,7 @@ class SignInScreenTest : LbAndroidTest() {
     }
 
     @Test
-    fun insertingDifferentPasswords_showsToast() = runBlocking {
-        mockkStatic(::pretendToShowAToast)
-        composeRule.awaitIdle()
-
+    fun insertingDifferentPasswordsOnSignIn_showsToast() = runBlocking {
         SignInScreenRobot(composeRule)
             .clickHomeSignIn()
             .inputEmail("jetpack@compose.com")
@@ -100,6 +95,74 @@ class SignInScreenTest : LbAndroidTest() {
 
         verify {
             pretendToShowAToast("The passwords don't match")
+        }
+    }
+
+    @Test
+    fun insertingValidDataOnSignIn_navigatesToTaskScreen() = runBlocking<Unit> {
+        SignInScreenRobot(composeRule)
+            .clickHomeSignIn()
+            .inputEmail("jetpack@compose.com")
+            .inputPassword("jetpackPassword")
+            .inputRepeatedPassword("jetpackPassword")
+            .clickBottomSheetSignIn()
+
+        verify {
+            pretendToShowAToastWithResId(R.string.sign_in_successful)
+        }
+    }
+
+    @Test
+    fun insertingNoEmailOnLogin_showsToast() = runBlocking {
+        SignInScreenRobot(composeRule)
+            .clickHomeLogin()
+            .clickBottomSheetLogin()
+
+        verify {
+            pretendToShowAToast("Write a valid email")
+        }
+    }
+
+    @Test
+    fun insertingAWrongEmailOnLogin_showsToast() = runBlocking {
+        SignInScreenRobot(composeRule)
+            .clickHomeLogin()
+            .inputEmail("jetpack-compose.com")
+            .clickBottomSheetLogin()
+
+        verify {
+            pretendToShowAToast("Write a valid email")
+        }
+    }
+
+    @Test
+    fun insertingNoPasswordOnLogin_showsToast() = runBlocking {
+        SignInScreenRobot(composeRule)
+            .clickHomeLogin()
+            .inputEmail("jetpack@compose.com")
+            .clickBottomSheetLogin()
+
+        verify {
+            pretendToShowAToast("Write your password")
+        }
+    }
+
+    @Test
+    fun insertingValidDataOnLogin_navigatesToTaskScreen() = runBlocking {
+        SignInScreenRobot(composeRule)
+            .clickHomeSignIn()
+            .inputEmail("jetpack@compose.com")
+            .inputPassword("jetpackPassword")
+            .inputRepeatedPassword("jetpackPassword")
+            .clickBottomSheetSignIn()
+            .clickLogout()
+            .clickHomeLogin()
+            .inputEmail("jetpack@compose.com")
+            .inputPassword("jetpackPassword")
+            .clickBottomSheetLogin()
+
+        verify(exactly = 2) {
+            pretendToShowAToastWithResId(R.string.sign_in_successful)
         }
     }
 }
