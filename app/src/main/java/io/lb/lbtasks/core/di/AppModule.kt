@@ -2,6 +2,7 @@ package io.lb.lbtasks.core.di
 
 import android.app.Application
 import com.google.android.gms.auth.api.identity.Identity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -25,9 +26,18 @@ import javax.inject.Singleton
 object AppModule {
     @Provides
     @Singleton
-    fun providesGoogleAuthUiClient(app: Application): GoogleAuthClient {
+    fun providesAuth(): FirebaseAuth {
+        return Firebase.auth
+    }
+
+    @Provides
+    @Singleton
+    fun providesGoogleAuthUiClient(
+        app: Application,
+        firebaseAuth: FirebaseAuth
+    ): GoogleAuthClient {
         return GoogleAuthClientImpl(
-            auth = Firebase.auth,
+            auth = firebaseAuth,
             context = app.applicationContext,
             oneTapClient = Identity.getSignInClient(app.applicationContext)
         )

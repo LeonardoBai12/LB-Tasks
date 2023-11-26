@@ -30,11 +30,18 @@ import javax.inject.Singleton
 object TestAppModule {
     @Provides
     @Singleton
-    fun providesGoogleAuthUiClient(app: Application): GoogleAuthClient {
-        val firebaseAuth = Firebase.auth.apply {
+    fun providesAuth(): FirebaseAuth {
+        return Firebase.auth.apply {
             useEmulator("10.0.2.2", 9099)
         }
+    }
 
+    @Provides
+    @Singleton
+    fun providesGoogleAuthUiClient(
+        app: Application,
+        firebaseAuth: FirebaseAuth
+    ): GoogleAuthClient {
         val oneTapClient = Identity.getSignInClient(app.applicationContext)
 
         return GoogleAuthClientImpl(

@@ -2,10 +2,13 @@ package io.lb.lbtasks
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import dagger.hilt.android.testing.HiltAndroidRule
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -20,6 +23,9 @@ abstract class LbAndroidTest {
     @Inject
     lateinit var database: FirebaseDatabase
 
+    @Inject
+    lateinit var auth: FirebaseAuth
+
     @Before
     open fun setUp() {
         context = ApplicationProvider.getApplicationContext()
@@ -27,7 +33,20 @@ abstract class LbAndroidTest {
     }
 
     @After
-    open fun tearDown() {
+    open fun tearDown() = runBlocking {
+        auth.currentUser?.let { user ->
+            val credential = EmailAuthProvider.getCredential(
+                "jetpack@compose.com",
+                "jetpackPassword"
+            )
+
+            user.reauthenticate(credential)
+                .addOnCompleteListener {
+                    user.delete()
+                }
+
+            database.reference.child(user.uid).removeValue().await()
+        }
         database.goOffline()
     }
 }
