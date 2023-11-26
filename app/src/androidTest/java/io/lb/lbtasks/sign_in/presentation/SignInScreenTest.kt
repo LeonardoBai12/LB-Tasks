@@ -6,7 +6,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import io.lb.lbtasks.LbAndroidTest
+import io.lb.lbtasks.LBAndroidTest
 import io.lb.lbtasks.R
 import io.lb.lbtasks.core.presentation.MainActivity
 import io.lb.lbtasks.core.util.pretendToShowAToast
@@ -26,7 +26,7 @@ import org.junit.Test
 @ExperimentalMaterialApi
 @ExperimentalAnimationApi
 @HiltAndroidTest
-class SignInScreenTest : LbAndroidTest() {
+class SignInScreenTest : LBAndroidTest() {
     @get:Rule
     val composeRule = createAndroidComposeRule<MainActivity>()
 

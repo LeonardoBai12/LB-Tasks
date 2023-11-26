@@ -6,7 +6,6 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import dagger.hilt.android.testing.HiltAndroidRule
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import org.junit.After
@@ -14,7 +13,7 @@ import org.junit.Before
 import org.junit.Rule
 import javax.inject.Inject
 
-abstract class LbAndroidTest {
+abstract class LBAndroidTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 

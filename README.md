@@ -20,7 +20,7 @@ The application is built using the following technologies:
 * [Firebase Authentication](https://firebase.google.com/docs/auth?hl=pt-br) for user authentication.
 * [JUnit 5](https://junit.org/junit5/docs/current/user-guide) for unit testing.
 * [MockK](https://mockk.io) for mocking objects in unit tests.
-* [Espresso](https://developer.android.com/training/testing/espresso) for UI testing (Not yet implemented).
+* [Jetpack Compose UI Testing](https://developer.android.com/jetpack/compose/testing) for UI testing.
 * [Github Actions](https://docs.github.com/pt/actions/learn-github-actions) for Continuous Integration/Continuous Deployment (CI/CD).
 
 ## Getting Started
