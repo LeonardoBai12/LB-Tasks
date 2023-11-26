@@ -9,10 +9,10 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import io.lb.lbtasks.core.util.LBTasksToaster
-import io.lb.lbtasks.core.util.TASK
+import dagger.hilt.testing.TestInstallIn
+import io.lb.lbtasks.core.util.FakeToaster
+import io.lb.lbtasks.core.util.TASK_TEST
 import io.lb.lbtasks.core.util.Toaster
 import io.lb.lbtasks.sign_in.data.auth_client.GoogleAuthClient
 import io.lb.lbtasks.sign_in.data.auth_client.GoogleAuthClientImpl
@@ -21,12 +21,17 @@ import io.lb.lbtasks.task.data.remote.RealtimeDatabaseClientImpl
 import javax.inject.Singleton
 
 @Module
-@InstallIn(SingletonComponent::class)
-object AppModule {
+@TestInstallIn(
+    components = [SingletonComponent::class],
+    replaces = [AppModule::class]
+)
+object TestAppModule {
     @Provides
     @Singleton
     fun providesAuth(): FirebaseAuth {
-        return Firebase.auth
+        return Firebase.auth.apply {
+            useEmulator("10.0.2.2", 9099)
+        }
     }
 
     @Provides
@@ -35,10 +40,12 @@ object AppModule {
         app: Application,
         firebaseAuth: FirebaseAuth
     ): GoogleAuthClient {
+        val oneTapClient = Identity.getSignInClient(app.applicationContext)
+
         return GoogleAuthClientImpl(
             auth = firebaseAuth,
             context = app.applicationContext,
-            oneTapClient = Identity.getSignInClient(app.applicationContext)
+            oneTapClient = oneTapClient
         )
     }
 
@@ -46,7 +53,8 @@ object AppModule {
     @Singleton
     fun providesRealtimeDatabase(): FirebaseDatabase {
         return Firebase.database.apply {
-            setPersistenceEnabled(true)
+            setPersistenceEnabled(false)
+            useEmulator("10.0.2.2", 9000)
         }
     }
 
@@ -55,12 +63,12 @@ object AppModule {
     fun providesRealtimeDatabaseClient(
         database: FirebaseDatabase
     ): RealtimeDatabaseClient {
-        return RealtimeDatabaseClientImpl(database.getReference(TASK))
+        return RealtimeDatabaseClientImpl(database.getReference(TASK_TEST))
     }
 
     @Provides
     @Singleton
-    fun providesToaster(app: Application): Toaster {
-        return LBTasksToaster(app.applicationContext)
+    fun providesToaster(): Toaster {
+        return FakeToaster()
     }
 }

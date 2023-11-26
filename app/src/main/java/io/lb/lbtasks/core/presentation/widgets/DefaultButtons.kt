@@ -60,7 +60,7 @@ fun DefaultTextButton(
     onClick: () -> Unit,
 ) {
     Button(
-        modifier = modifier.height(56.dp),
+        modifier = modifier.height(48.dp),
         enabled = enabled,
         shape = RoundedCornerShape(36.dp),
         colors = ButtonDefaults.buttonColors(

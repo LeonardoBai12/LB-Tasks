@@ -15,8 +15,8 @@ import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,16 +26,14 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.lb.lbtasks.R
 import io.lb.lbtasks.core.presentation.widgets.DefaultTextButton
-import io.lb.lbtasks.core.util.showToast
 import io.lb.lbtasks.sign_in.presentation.login.LoginBottomSheetContent
 import io.lb.lbtasks.sign_in.presentation.sing_in.SignInBottomSheetContent
-import io.lb.lbtasks.sign_in.presentation.sing_in.SignInState
 import io.lb.lbtasks.sign_in.presentation.widgets.HomeLoginBackground
 import io.lb.lbtasks.sign_in.presentation.widgets.HomeLoginHeader
 import kotlinx.coroutines.launch
@@ -46,7 +44,6 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterial3Api
 @Composable
 fun SignInScreen(
-    state: SignInState,
     onSignInWithGoogleClick: () -> Unit,
     onSignInClick: (String, String, String) -> Unit,
     onLoginClick: (String, String) -> Unit,
@@ -58,14 +55,6 @@ fun SignInScreen(
     val coroutineScope = rememberCoroutineScope()
     val isLogin = remember {
         mutableStateOf(true)
-    }
-
-    val context = LocalContext.current
-
-    LaunchedEffect(key1 = state.signInError) {
-        state.signInError?.let { error ->
-            context.showToast(error)
-        }
     }
 
     HomeLoginBackground()
@@ -109,13 +98,14 @@ private fun LoginButtonsColumn(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(60.dp),
+            .padding(36.dp),
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         DefaultTextButton(
-            modifier = Modifier.fillMaxWidth()
-                .padding(bottom = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
             text = stringResource(id = R.string.login),
             onClick = {
                 coroutineScope.launch {
@@ -126,8 +116,8 @@ private fun LoginButtonsColumn(
         )
 
         DefaultTextButton(
-            modifier = Modifier.fillMaxWidth()
-                .padding(bottom = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth(),
             text = stringResource(id = R.string.sign_in),
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
             contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -139,8 +129,15 @@ private fun LoginButtonsColumn(
             },
         )
 
+        Text(
+            modifier = Modifier.padding(top = 4.dp, bottom = 8.dp),
+            text = "or",
+            fontWeight = FontWeight.SemiBold
+        )
+
         DefaultTextButton(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .shadow(2.dp, shape = RoundedCornerShape(36.dp)),
             text = stringResource(id = R.string.continue_with_google),
             icon = painterResource(id = R.drawable.ic_google),
