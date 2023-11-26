@@ -4,6 +4,7 @@ import android.app.Application
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import dagger.Module
@@ -34,15 +35,18 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providesRealtimeDatabase(): RealtimeDatabaseClient {
-        var database: DatabaseReference
-
-        Firebase.database.run {
+    fun providesRealtimeDatabase(): FirebaseDatabase {
+        return Firebase.database.apply {
             setPersistenceEnabled(true)
-            database = getReference(TASK)
         }
+    }
 
-        return RealtimeDatabaseClientImpl(database)
+    @Provides
+    @Singleton
+    fun providesRealtimeDatabaseClient(
+        database: FirebaseDatabase
+    ): RealtimeDatabaseClient {
+        return RealtimeDatabaseClientImpl(database.getReference(TASK))
     }
 
     @Provides

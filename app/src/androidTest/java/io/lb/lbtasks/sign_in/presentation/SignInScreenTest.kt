@@ -19,12 +19,9 @@ import io.lb.lbtasks.core.util.pretendToShowAToast
 import io.mockk.mockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-
 
 @ExperimentalCoroutinesApi
 @ExperimentalMaterial3Api
@@ -36,13 +33,34 @@ class SignInScreenTest : LbAndroidTest() {
     @get:Rule
     val composeRule = createAndroidComposeRule<MainActivity>()
 
-    @Before
-    override fun setUp() {
-        super.setUp()
+    @Test
+    fun insertingNoEmail_showsToast() = runBlocking {
+        mockkStatic(::pretendToShowAToast)
+        composeRule.awaitIdle()
+
+        composeRule.onAllNodes(
+            hasText("Sign in")
+                .and(hasClickAction())
+        ).onFirst()
+            .assertIsDisplayed()
+            .performClick()
+
+        composeRule.waitForIdle()
+
+        composeRule.onAllNodes(
+            hasText("Sign in")
+                .and(hasClickAction())
+        ).onLast()
+            .assertIsDisplayed()
+            .performClick()
+
+        verify {
+            pretendToShowAToast("Write a valid email")
+        }
     }
 
     @Test
-    fun asdasdda() = runBlocking {
+    fun insertingAWrongEmail_showsToast() = runBlocking {
         mockkStatic(::pretendToShowAToast)
         composeRule.awaitIdle()
 
@@ -67,10 +85,116 @@ class SignInScreenTest : LbAndroidTest() {
             .assertIsDisplayed()
             .performClick()
 
-        delay(1500)
-
         verify {
             pretendToShowAToast("Write a valid email")
+        }
+    }
+
+    @Test
+    fun insertingNoPassword_showsToast() = runBlocking {
+        mockkStatic(::pretendToShowAToast)
+        composeRule.awaitIdle()
+
+        composeRule.onAllNodes(
+            hasText("Sign in")
+                .and(hasClickAction())
+        ).onFirst()
+            .assertIsDisplayed()
+            .performClick()
+
+        composeRule.waitForIdle()
+
+        composeRule.onNode(
+            hasText("E-mail")
+        ).assertIsDisplayed()
+            .performTextInput("jetpack@compose.com")
+
+        composeRule.onAllNodes(
+            hasText("Sign in")
+                .and(hasClickAction())
+        ).onLast()
+            .assertIsDisplayed()
+            .performClick()
+
+        verify {
+            pretendToShowAToast("Write your password")
+        }
+    }
+
+    @Test
+    fun insertingJustThePassword_showsToast() = runBlocking {
+        mockkStatic(::pretendToShowAToast)
+        composeRule.awaitIdle()
+
+        composeRule.onAllNodes(
+            hasText("Sign in")
+                .and(hasClickAction())
+        ).onFirst()
+            .assertIsDisplayed()
+            .performClick()
+
+        composeRule.waitForIdle()
+
+        composeRule.onNode(
+            hasText("E-mail")
+        ).assertIsDisplayed()
+            .performTextInput("jetpack@compose.com")
+
+        composeRule.onNode(
+            hasText("Password")
+        ).assertIsDisplayed()
+            .performTextInput("jetpackPassword")
+
+        composeRule.onAllNodes(
+            hasText("Sign in")
+                .and(hasClickAction())
+        ).onLast()
+            .assertIsDisplayed()
+            .performClick()
+
+        verify {
+            pretendToShowAToast("The passwords don't match")
+        }
+    }
+
+    @Test
+    fun insertingDifferentPasswords_showsToast() = runBlocking {
+        mockkStatic(::pretendToShowAToast)
+        composeRule.awaitIdle()
+
+        composeRule.onAllNodes(
+            hasText("Sign in")
+                .and(hasClickAction())
+        ).onFirst()
+            .assertIsDisplayed()
+            .performClick()
+
+        composeRule.waitForIdle()
+
+        composeRule.onNode(
+            hasText("E-mail")
+        ).assertIsDisplayed()
+            .performTextInput("jetpack@compose.com")
+
+        composeRule.onNode(
+            hasText("Password")
+        ).assertIsDisplayed()
+            .performTextInput("jetpackPassword")
+
+        composeRule.onNode(
+            hasText("Repeat your password")
+        ).assertIsDisplayed()
+            .performTextInput("differentPassword")
+
+        composeRule.onAllNodes(
+            hasText("Sign in")
+                .and(hasClickAction())
+        ).onLast()
+            .assertIsDisplayed()
+            .performClick()
+
+        verify {
+            pretendToShowAToast("The passwords don't match")
         }
     }
 }
