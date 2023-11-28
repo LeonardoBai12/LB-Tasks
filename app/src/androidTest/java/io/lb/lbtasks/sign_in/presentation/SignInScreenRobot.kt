@@ -20,6 +20,10 @@ import kotlinx.coroutines.delay
 class SignInScreenRobot(
     private val composeRule: LBComposeRule
 ) {
+    init {
+        composeRule.waitForIdle()
+    }
+
     fun clickHomeSignIn(): SignInScreenRobot {
         composeRule.onAllNodes(
             hasText("Sign in")
