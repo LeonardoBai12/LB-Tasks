@@ -33,6 +33,17 @@ abstract class LBAndroidTest {
 
     @After
     open fun tearDown() = runBlocking {
+        if (auth.currentUser == null) {
+            try {
+                auth.signInWithEmailAndPassword(
+                    "jetpack@compose.com",
+                    "jetpackPassword"
+                ).await()
+            } catch (_: Exception) {
+
+            }
+        }
+
         auth.currentUser?.let { user ->
             val credential = EmailAuthProvider.getCredential(
                 "jetpack@compose.com",
@@ -42,7 +53,7 @@ abstract class LBAndroidTest {
             user.reauthenticate(credential)
                 .addOnCompleteListener {
                     user.delete()
-                }
+                }.await()
 
             database.reference.child(user.uid).removeValue().await()
         }
