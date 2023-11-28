@@ -12,6 +12,7 @@ import androidx.compose.ui.test.onLast
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import io.lb.lbtasks.core.util.LBComposeRule
+import kotlinx.coroutines.delay
 
 @ExperimentalMaterial3Api
 @ExperimentalComposeUiApi
@@ -63,7 +64,7 @@ class SignInScreenRobot(
         return this
     }
 
-    fun clickBottomSheetSignIn(): SignInScreenRobot {
+    suspend fun clickBottomSheetSignIn(): SignInScreenRobot {
         composeRule.onAllNodes(
             hasText("Sign in")
                 .and(hasClickAction())
@@ -72,10 +73,11 @@ class SignInScreenRobot(
             .performClick()
 
         composeRule.waitForIdle()
+        delay(500)
         return this
     }
 
-    fun clickBottomSheetLogin(): SignInScreenRobot {
+    suspend fun clickBottomSheetLogin(): SignInScreenRobot {
         composeRule.onAllNodes(
             hasText("Login")
                 .and(hasClickAction())
@@ -84,6 +86,7 @@ class SignInScreenRobot(
             .performClick()
 
         composeRule.waitForIdle()
+        delay(500)
         return this
     }
 
