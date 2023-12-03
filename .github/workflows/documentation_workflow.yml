@@ -3,7 +3,7 @@ name: Documentation
 on:
   push:
     branches:
-      - feature/jacoco
+      - main
 
 jobs:
   documentation:

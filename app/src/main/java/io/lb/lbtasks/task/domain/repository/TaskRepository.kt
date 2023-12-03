@@ -5,6 +5,9 @@ import io.lb.lbtasks.sign_in.domain.model.UserData
 import io.lb.lbtasks.task.domain.model.Task
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Repository to communicate with the Realtime Database.
+ */
 interface TaskRepository {
     /**
      * Deletes an existent task.

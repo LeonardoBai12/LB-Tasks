@@ -21,7 +21,9 @@ The application is built using the following technologies:
 * [JUnit 5](https://junit.org/junit5/docs/current/user-guide) for unit testing.
 * [MockK](https://mockk.io) for mocking objects in unit tests.
 * [Jetpack Compose UI Testing](https://developer.android.com/jetpack/compose/testing) for UI testing.
-* [Github Actions](https://docs.github.com/pt/actions/learn-github-actions) for Continuous Integration/Continuous Deployment (CI/CD).
+* [Github Actions](https://docs.github.com/pt/actions/learn-github-actions) for Continuous Integration/Continuous Deployment (CI/CD)
+* [Dokka](https://github.com/Kotlin/dokka) for generating documentation.
+* [JaCoCo](https://www.jacoco.org) for generating test coverage reports.
 
 ## Getting Started
 
@@ -37,6 +39,16 @@ To ensure high-quality code, the following tools and processes are used before m
 * All unit tests are run to ensure code functionality and quality.
 
 This process helps maintain code consistency and quality throughout the project.
+
+## Documentation
+
+The documentation is automatically generated and published for every push to the main branch.\
+To access the documentation, download the _lb-meals-documentation_ file from the [Documentation](https://github.com/LeonardoBai12/LB-Tasks/actions/workflows/documentation_workflow.yml) action artifacts.
+
+## Coverage Report
+
+An unit test coverage report is generated and published for every push to the main branch.\
+To access the test coverage report, download the _lb-meals-coverage-report_ file from the [Coverage Report](https://github.com/LeonardoBai12/LB-Tasks/actions/workflows/coverage_report_worflow.yml) action artifacts.
 
 ## Demonstration
 

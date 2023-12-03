@@ -2,6 +2,9 @@ package io.lb.lbtasks.task.domain.model
 
 import io.lb.lbtasks.R
 
+/**
+ * Types of task that are allowed to be created.
+ */
 enum class TaskType(
     val titleId: Int,
     val painterId: Int,
