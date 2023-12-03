@@ -3,6 +3,9 @@ package io.lb.lbtasks.task.domain.model
 import com.google.gson.Gson
 import java.util.UUID
 
+/**
+ * Data from a single task.
+ */
 data class Task(
     val uuid: String = UUID.randomUUID().toString(),
     var title: String,
