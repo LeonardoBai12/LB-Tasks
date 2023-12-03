@@ -1,0 +1,48 @@
+name: Coverage Report
+
+on:
+  push:
+    branches:
+      - feature/jacoco
+
+jobs:
+  coverage:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'adopt'
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Decode google-services.json
+        env:
+          GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
+        run: echo $GOOGLE_SERVICES > app/google-services.json
+
+      - name: Generate Coverage Report with Android Emulator Runner
+        uses: ReactiveCircus/android-emulator-runner@v2.14.3
+        with:
+          api-level: 29
+          script: ./gradlew clean createDebugAndroidTestCoverageReport
+
+      - name: Upload Android Tests Coverage Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: Lb-Tasks-Coverage-Report
+          path: 'app/build/reports/coverage/androidTest/debug/connected'
+
+      - name: Run Tests
+        run: ./gradlew clean createDebugUnitTestCoverageReport
+
+      - name: Upload Unit Tests Coverage Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: Lb-Tasks-Coverage-Report
+          path: 'app/build/reports/coverage/test/debug/'

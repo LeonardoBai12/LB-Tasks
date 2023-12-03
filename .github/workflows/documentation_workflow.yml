@@ -1,0 +1,30 @@
+name: Documentation
+
+on:
+  push:
+    branches:
+      - feature/jacoco
+
+jobs:
+  documentation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Decode google-services.json
+        env:
+          GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
+        run: echo $GOOGLE_SERVICES > app/google-services.json
+
+      - name: Generate documentation
+        run: ./gradlew clean app:dokkaHtml
+
+      - name: Upload documentation
+        uses: actions/upload-artifact@v3
+        with:
+          name: LB-Tasks-Documentation
+          path: 'app/build/dokka/html'
