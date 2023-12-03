@@ -43,12 +43,12 @@ This process helps maintain code consistency and quality throughout the project.
 ## Documentation
 
 The documentation is automatically generated and published for every push to the main branch.\
-To access the documentation, download the _lb-meals-documentation_ file from the [Documentation](https://github.com/LeonardoBai12/LB-Tasks/actions/workflows/documentation_workflow.yml) action artifacts.
+To access the documentation, download the _Lb-Tasks-Documentation_ file from the [Documentation](https://github.com/LeonardoBai12/LB-Tasks/actions/workflows/documentation_workflow.yml) action artifacts.
 
 ## Coverage Report
 
 An unit test coverage report is generated and published for every push to the main branch.\
-To access the test coverage report, download the _lb-meals-coverage-report_ file from the [Coverage Report](https://github.com/LeonardoBai12/LB-Tasks/actions/workflows/coverage_report_worflow.yml) action artifacts.
+To access the test coverage report, download the _Lb-Tasks-Coverage-Report_ file from the [Coverage Report](https://github.com/LeonardoBai12/LB-Tasks/actions/workflows/coverage_report_worflow.yml) action artifacts.
 
 ## Demonstration
 
