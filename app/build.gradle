@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId "io.lb.lbtasks"
-        minSdk 24
+        minSdk 26
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -26,6 +26,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            testCoverageEnabled = true
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -45,6 +48,15 @@ android {
         kotlinCompilerExtensionVersion "1.4.3"
     }
     packagingOptions {
+        exclude("META-INF/DEPENDENCIES")
+        exclude("META-INF/LICENSE")
+        exclude("META-INF/LICENSE.txt")
+        exclude("META-INF/license.txt")
+        exclude("META-INF/NOTICE")
+        exclude("META-INF/NOTICE.txt")
+        exclude("META-INF/notice.txt")
+        exclude("META-INF/ASL2.0")
+        exclude("META-INF/*.kotlin_module")
         resources.excludes.add("META-INF/LICENSE.md")
         resources.excludes.add("META-INF/LICENSE-notice.md")
         resources {
@@ -60,6 +72,8 @@ android {
         }
     }
 }
+
+apply from: "$project.rootDir/jacoco.gradle"
 
 dependencies {
     def coroutines_version = "1.6.4"
@@ -84,8 +98,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.10.0'
     implementation 'com.google.android.gms:play-services-auth:20.1.0'
 
-    implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.7'
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
     implementation 'com.google.code.gson:gson:2.9.0'
     implementation 'com.google.android.recaptcha:recaptcha:18.2.1'
 
@@ -103,6 +116,7 @@ dependencies {
     kapt "androidx.hilt:hilt-compiler:1.1.0"
 
     implementation "androidx.tracing:tracing:1.1.0"
+    implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.20.0'
 
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
@@ -117,12 +131,12 @@ dependencies {
     kaptTest "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     androidTestImplementation "com.google.dagger:hilt-android-testing:$hilt_version"
-    androidTestAnnotationProcessor "com.google.dagger:hilt-compiler:$hilt_version"
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation "com.willowtreeapps.assertk:assertk:0.27.0"
     androidTestImplementation "io.mockk:mockk-android:1.13.4"
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+    kaptAndroidTest "com.google.dagger:hilt-compiler:$hilt_version"
     kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
