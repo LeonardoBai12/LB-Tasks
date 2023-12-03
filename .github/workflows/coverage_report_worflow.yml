@@ -26,17 +26,19 @@ jobs:
           GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
         run: echo $GOOGLE_SERVICES > app/google-services.json
 
-      - name: Generate Coverage Report with Android Emulator Runner
-        uses: ReactiveCircus/android-emulator-runner@v2.14.3
-        with:
-          api-level: 29
-          script: ./gradlew clean createDebugAndroidTestCoverageReport
+#       I need to find a way to run a Firebase emulator on my CI to
+#      generate UI tests coverage reports
+#      - name: Generate Coverage Report with Android Emulator Runner
+#        uses: ReactiveCircus/android-emulator-runner@v2.14.3
+#        with:
+#          api-level: 29
+#          script: ./gradlew clean createDebugAndroidTestCoverageReport
 
-      - name: Upload Android Tests Coverage Report
-        uses: actions/upload-artifact@v3
-        with:
-          name: Lb-Tasks-Coverage-Report
-          path: 'app/build/reports/coverage/androidTest/debug/connected'
+#      - name: Upload Android Tests Coverage Report
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: Lb-Tasks-Coverage-Report
+#          path: 'app/build/reports/coverage/androidTest/debug/connected'
 
       - name: Run Tests
         run: ./gradlew clean createDebugUnitTestCoverageReport
