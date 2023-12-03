@@ -1,0 +1,14 @@
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = "0.8.8"
+}
+
+tasks.register("fullJacocoReport") {
+    it.dependsOn(
+            connectedAndroidTest,
+            testDebugUnitTest,
+            createDebugUnitTestCoverageReport,
+            createDebugAndroidTestCoverageReport
+    )
+}
